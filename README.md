@@ -18,4 +18,4 @@ Each folder (a1 and a2) contains the details and source code related to each of 
 
 ---
 
-This repository is maintained by Daniel Gago and José Santos. For more information on this course, check out [the course unit page](https://sigarra.up.pt/feup/pt/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=520329) provided by FEUP.
+This repository is maintained by Daniel Gago, João Teixeira and José Santos. For more information on this course, check out [the course unit page](https://sigarra.up.pt/feup/pt/ucurr_geral.ficha_uc_view?pv_ocorrencia_id=520334) provided by FEUP.
