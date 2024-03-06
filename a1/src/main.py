@@ -58,6 +58,9 @@ df = pd.DataFrame(
     ],
 )
 
+pd.set_option('display.max_columns', None)
+print(df.iloc[0:6,:])
+
 """
 #Example: Randomly assign a package as broken based on distance_covered
 distance_covered = sum(distances)

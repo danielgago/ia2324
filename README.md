@@ -8,7 +8,7 @@ Each folder (a1 and a2) contains the details and source code related to each of 
 
 **Theme chosen:** Metaheuristics for Optimization/Decision Problems - Delivery Scheduling
 
-**Description:** The objective is to develop an algorithm to optimize the delivery order of packages in a scenario where packages of three types - fragile, normal, and urgent - must be transported to various delivery locations. The algorithm aims to minimize damage to the fragile packages as well as travel costs incurred for each kilometer traveled, and adhere to time constraints for urgent packages. The system will solve multiple instances of the chosen problem, comparing the results obtained by each algorithm.
+**Description:** The objective is to develop an algorithm to optimize the delivery order of packages in a scenario where there exists packages of three types - fragile, normal, and urgent - must be transported to various delivery locations. The algorithm aims to minimize damage to the fragile packages as well as travel costs incurred for each kilometer traveled, and adhere to time constraints for urgent packages. This problem is based on the classic Traveling Salesperson problem. The system will solve multiple instances of this problem using different algorithms and the results will be compared.
 
 ## Authors
 
