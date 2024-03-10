@@ -29,118 +29,135 @@ def generate_package_stream(num_packages, map_size):
     ]
     return package_stream
 
+
+def generate_random_solution(package_stream):
+    solution = copy.deepcopy(package_stream)
+    random.shuffle(solution)
+    return solution
+
+
 def evaluate_solution(solution):
     last_x = 0
     last_y = 0
     total_dist = 0
     total_breaking_cost = 0
     total_urgent_cost = 0
-    
+
     for package in package_stream:
-        dist = math.sqrt((package.coordinates_x - last_x)**2 + (package.coordinates_y - last_y)**2)
+        dist = math.sqrt(
+            (package.coordinates_x - last_x) ** 2
+            + (package.coordinates_y - last_y) ** 2
+        )
         total_dist += dist
-        
+
         last_x = package.coordinates_x
         last_y = package.coordinates_y
-        
+
         if package.package_type == "fragile":
             p_damage = 1 - ((1 - package.breaking_chance) ** total_dist)
             if random.uniform(0, 1) < p_damage:
                 total_breaking_cost += package.breaking_cost
-           
-        if(package.package_type == "urgent"):
-            if(total_dist > package.delivery_time): # 60km/h = 1km/min so total_dist is equal to the minutes elapsed
-                total_urgent_cost += (total_dist - package.delivery_time) * 0.3   
-                
-    total_cost = total_dist*0.3 + total_breaking_cost + total_urgent_cost
-        
+
+        if package.package_type == "urgent":
+            if (
+                total_dist > package.delivery_time
+            ):  # 60km/h = 1km/min so total_dist is equal to the minutes elapsed
+                total_urgent_cost += (total_dist - package.delivery_time) * 0.3
+
+    total_cost = total_dist * 0.3 + total_breaking_cost + total_urgent_cost
+
     return -total_cost
+
 
 # Pick a package and place it somewhere else on the solution
 def get_neighbour_solution1(solution):
     neighbour = copy.deepcopy(solution)
-    
-    package_number = random.randint(0, len(neighbour))
+
+    package_number = random.randint(0, len(neighbour) - 1)
     package = neighbour.pop(package_number)
-    
-    new_pos = random.randint(0, len(neighbour))
-    
+
+    new_pos = random.randint(0, len(neighbour) - 1)
     neighbour.insert(new_pos, package)
-    
+
+    return neighbour
+
 
 # Swap 2 packages from the order
 def get_neighbour_solution2(solution):
     neighbour = copy.deepcopy(solution)
-    package1 = random.randint(0, len(neighbour))
-    package2 = random.randint(0, len(neighbour))
+
+    package1 = random.randint(0, len(neighbour) - 1)
+    package2 = random.randint(0, len(neighbour) - 1)
     neighbour[package1], neighbour[package2] = neighbour[package2], neighbour[package1]
-    
+
     return neighbour
-    
+
+
 # Neighbour 1 or 2 with 50% each
-def get_neighbour_solution3(solution): 
+def get_neighbour_solution3(solution):
     if random.randint(0, 2) == 0:
         return get_neighbour_solution1(solution)
     else:
         return get_neighbour_solution2(solution)
-    
-def midpoint_crossover(solution_1, solution_2):
-    length = len(solution_1)
-    midpoint = length // 2
 
-    #Your Code Here
-    child_1 = solution_1[:midpoint] + solution_2[midpoint:]
-    child_2 = solution_2[:midpoint] + solution_1[midpoint:]
 
-    return child_1, child_2
+def get_hc_solution(package_stream, num_iterations, log=False):
+    iteration = 0
+    best_solution = package_stream  # Best solution after 'num_iterations' iterations without improvement
+    best_score = evaluate_solution(best_solution)
 
-def randompoint_crossover(solution_1, solution_2):
-    length = len(solution_1)
-    midpoint = random.randint(0, length)
+    print(f"Initial score: {best_score}")
 
-    #Your Code Here
-    child_1 = solution_1[:midpoint] + solution_2[midpoint:]
-    child_2 = solution_2[:midpoint] + solution_1[midpoint:]
+    while iteration < num_iterations:
+        iteration += 1
+        neighbor_solution = get_neighbour_solution3(best_solution)
+        neighbor_score = evaluate_solution(neighbor_solution)
 
-    return child_1, child_2
+        if neighbor_score > best_score:
+            best_solution = neighbor_solution
+            best_score = neighbor_score
+            iteration = 0
+            print(f"New best score: {neighbor_score}")
+
+    return best_solution
+
+
+def solution_to_data_frame(solution):
+    df = pd.DataFrame(
+        [
+            (
+                i,
+                package.package_type,
+                package.coordinates_x,
+                package.coordinates_y,
+                package.breaking_chance if package.package_type == "fragile" else None,
+                package.breaking_cost if package.package_type == "fragile" else None,
+                package.delivery_time if package.package_type == "urgent" else None,
+            )
+            for i, package in enumerate(solution, start=1)
+        ],
+        columns=[
+            "Package",
+            "Type",
+            "CoordinatesX",
+            "CoordinatesY",
+            "Breaking Chance",
+            "Breaking Cost",
+            "Delivery Time",
+        ],
+    )
+    return df
+
 
 # Example: Generate a stream of 15 packages in a map of size 60x60
-num_packages = 15
-map_size = 60
+num_packages = 10
+map_size = 5000
 package_stream = generate_package_stream(num_packages, map_size)
-df = pd.DataFrame(
-    [
-        (
-            i,
-            package.package_type,
-            package.coordinates_x,
-            package.coordinates_y,
-            package.breaking_chance if package.package_type == "fragile" else None,
-            package.breaking_cost if package.package_type == "fragile" else None,
-            package.delivery_time if package.package_type == "urgent" else None,
-        )
-        for i, package in enumerate(package_stream, start=1)
-    ],
-    columns=[
-        "Package",
-        "Type",
-        "CoordinatesX",
-        "CoordinatesY",
-        "Breaking Chance",
-        "Breaking Cost",
-        "Delivery Time",
-    ],
-)
 
-pd.set_option('display.max_columns', None)
-print(df.iloc[0:,:])
-print(evaluate_solution(package_stream))
+df1 = solution_to_data_frame(package_stream)
+pd.set_option("display.max_columns", None)
+print(df1.iloc[0:, :])
 
-"""
-#Example: Randomly assign a package as broken based on distance_covered
-distance_covered = sum(distances)
-chance_of_damage = package.breaking_chance
-p_damage = 1 - ((1 - chance_of_damage) ** distance_covered)
-if random.uniform(0, 1) < p_damage:
-    print('Package broken')
-"""
+solution = get_hc_solution(package_stream, 10000)
+df2 = solution_to_data_frame(solution)
+print(df2.iloc[0:, :])
