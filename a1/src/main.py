@@ -95,7 +95,7 @@ def get_neighbour_solution2(solution):
 
 # Neighbour 1 or 2 with 50% each
 def get_neighbour_solution3(solution):
-    if random.randint(0, 2) == 0:
+    if random.randint(0, 1) == 0:
         return get_neighbour_solution1(solution)
     else:
         return get_neighbour_solution2(solution)
@@ -158,6 +158,6 @@ df1 = solution_to_data_frame(package_stream)
 pd.set_option("display.max_columns", None)
 print(df1.iloc[0:, :])
 
-solution = get_hc_solution(package_stream, 10000)
+solution = get_neighbour_solution1(package_stream)
 df2 = solution_to_data_frame(solution)
 print(df2.iloc[0:, :])
