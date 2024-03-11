@@ -1,5 +1,17 @@
 import random, math, copy
 import pandas as pd
+import pygame
+
+num_packages = 100
+map_size = 1
+WIDTH = 600
+
+
+class Time:
+    def __init__(self, minutes):
+        self.days = minutes // 3600
+        self.hours = (minutes % 3600) // 60
+        self.minutes = minutes % 60
 
 
 class Package:
@@ -16,6 +28,71 @@ class Package:
             self.delivery_time = random.uniform(
                 100, 240
             )  # Delivery time in minutes (100 minutes to 4 hours)
+
+
+class DeliveredPackage(Package):
+    def __init__(self, package, broken, delivery_time):
+        super().__init__(
+            package.package_type, (package.coordinates_x, package.coordinates_y)
+        )
+        if package.package_type == "fragile":
+            self.broken = broken
+        self.delivery_time = delivery_time
+
+
+class DeliveryStats:
+    def __init__(
+        self, delivered_packages, total_distance, total_breaking_cost, total_late_time
+    ):
+        self.delivered_packages = delivered_packages
+        self.total_distance = total_distance
+        self.total_breaking_cost = total_breaking_cost
+        self.total_late_time = total_late_time
+
+    def show(self):
+        WHITE = (255, 255, 255)
+        RED = (255, 0, 0)
+        GREEN = (0, 255, 0)
+        BLUE = (0, 0, 255)
+
+        pygame.init()
+        screen = pygame.display.set_mode((WIDTH, WIDTH))
+        pygame.display.set_caption("Delivery Path Visualization")
+        clock = pygame.time.Clock()
+
+        delivery_path = [(0, 0)]  # Starting point
+
+        # Calculate delivery path
+        for package in self.delivered_packages:
+            destination = (
+                package.coordinates_x * (WIDTH / map_size),
+                package.coordinates_y * (WIDTH / map_size),
+            )
+            delivery_path.append(destination)
+
+        running = True
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+
+            screen.fill(WHITE)
+
+            # Update the screen
+            for package in self.delivered_packages:
+                draw_x = package.coordinates_x * (WIDTH / map_size)
+                draw_y = package.coordinates_y * (WIDTH / map_size)
+                if package.package_type == "fragile":
+                    pygame.draw.circle(screen, RED, (draw_x, draw_y), 5)
+                elif package.package_type == "urgent":
+                    pygame.draw.circle(screen, GREEN, (draw_x, draw_y), 5)
+                else:
+                    pygame.draw.circle(screen, BLUE, (draw_x, draw_y), 5)
+            pygame.draw.lines(screen, BLUE, False, delivery_path, 2)
+            pygame.display.flip()
+            clock.tick(60)
+
+        pygame.quit()
 
 
 def generate_package_stream(num_packages, map_size):
@@ -41,6 +118,7 @@ def evaluate_solution(solution):
     last_y = 0
     total_dist = 0
     total_breaking_cost = 0
+    total_broken = 0
     total_urgent_cost = 0
 
     for package in solution:
@@ -55,7 +133,9 @@ def evaluate_solution(solution):
 
         if package.package_type == "fragile":
             p_damage = 1 - ((1 - package.breaking_chance) ** total_dist)
-            total_breaking_cost += p_damage*package.breaking_cost # Expected value of breaking cost
+            total_breaking_cost += (
+                p_damage * package.breaking_cost
+            )  # Expected value of breaking cost
 
         if package.package_type == "urgent":
             if (
@@ -148,15 +228,23 @@ def solution_to_data_frame(solution):
     return df
 
 
-# Example: Generate a stream of 15 packages in a map of size 60x60
-num_packages = 15
-map_size = 60
-package_stream = generate_package_stream(num_packages, map_size)
+def main():
+    package_stream = generate_package_stream(num_packages, map_size)
 
-df1 = solution_to_data_frame(package_stream)
-pd.set_option("display.max_columns", None)
-print(df1.iloc[0:, :])
+    df1 = solution_to_data_frame(package_stream)
+    pd.set_option("display.max_columns", None)
+    print(df1.iloc[0:, :])
 
-solution = get_hc_solution(package_stream, 10000)
-df2 = solution_to_data_frame(solution)
-print(df2.iloc[0:, :])
+    stats1 = DeliveryStats(package_stream, 0, 0, 0)
+    stats1.show()
+
+    solution = get_hc_solution(package_stream, 10000)
+    df2 = solution_to_data_frame(solution)
+    print(df2.iloc[0:, :])
+
+    stats2 = DeliveryStats(solution, 0, 0, 0)
+    stats2.show()
+
+
+if __name__ == "__main__":
+    main()
