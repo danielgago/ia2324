@@ -43,7 +43,7 @@ def evaluate_solution(solution):
     total_breaking_cost = 0
     total_urgent_cost = 0
 
-    for package in package_stream:
+    for package in solution:
         dist = math.sqrt(
             (package.coordinates_x - last_x) ** 2
             + (package.coordinates_y - last_y) ** 2
@@ -55,8 +55,7 @@ def evaluate_solution(solution):
 
         if package.package_type == "fragile":
             p_damage = 1 - ((1 - package.breaking_chance) ** total_dist)
-            if random.uniform(0, 1) < p_damage:
-                total_breaking_cost += package.breaking_cost
+            total_breaking_cost += p_damage*package.breaking_cost # Expected value of breaking cost
 
         if package.package_type == "urgent":
             if (
@@ -150,14 +149,14 @@ def solution_to_data_frame(solution):
 
 
 # Example: Generate a stream of 15 packages in a map of size 60x60
-num_packages = 10
-map_size = 5000
+num_packages = 15
+map_size = 60
 package_stream = generate_package_stream(num_packages, map_size)
 
 df1 = solution_to_data_frame(package_stream)
 pd.set_option("display.max_columns", None)
 print(df1.iloc[0:, :])
 
-solution = get_neighbour_solution1(package_stream)
+solution = get_hc_solution(package_stream, 10000)
 df2 = solution_to_data_frame(solution)
 print(df2.iloc[0:, :])
