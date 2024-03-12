@@ -7,12 +7,6 @@ map_size = 1
 WIDTH = 600
 
 
-class Time:
-    def __init__(self, minutes):
-        self.days = minutes // 3600
-        self.hours = (minutes % 3600) // 60
-        self.minutes = minutes % 60
-
 
 class Package:
     def __init__(self, package_type, coordinates):
