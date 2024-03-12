@@ -227,6 +227,36 @@ def solution_to_data_frame(solution):
     )
     return df
 
+def order_based_crossover(solution1, solution2):
+    child1 = [None] * len(solution1)
+    
+    child2 = [None] * len(solution1)
+
+    indices = sorted(random.sample(range(len(solution1)), len(solution1) // 2))
+
+    for index in indices:
+        child1[index] = solution1[index]
+        child2[index] = solution2[index]
+    
+    solution2_rest = [pkg for pkg in solution2 if pkg not in child1]
+    iterator = iter(solution2_rest)
+
+    for i in range(len(child1)):
+        if child1[i] is None:
+            child1[i] = next(iterator)
+
+    solution1_rest = [pkg for pkg in solution1 if pkg not in child2]
+    iterator = iter(solution1_rest)
+
+    for i in range(len(child2)):
+        if child2[i] is None:
+            child2[i] = next(iterator)
+    
+    return child1, child2
+    
+
+
+
 
 def main():
     package_stream = generate_package_stream(num_packages, map_size)
