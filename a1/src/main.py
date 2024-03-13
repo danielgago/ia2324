@@ -7,12 +7,6 @@ map_size = 60
 WIDTH = 600
 
 
-class Time:
-    def __init__(self, minutes):
-        self.days = minutes // 3600
-        self.hours = (minutes % 3600) // 60
-        self.minutes = minutes % 60
-
 
 class Package:
     def __init__(self, package_type, coordinates):
@@ -226,6 +220,71 @@ def solution_to_data_frame(solution):
         ],
     )
     return df
+
+def order_based_crossover(solution1, solution2):
+    child1 = [None] * len(solution1)
+
+    child2 = [None] * len(solution1)
+
+    indices = sorted(random.sample(range(len(solution1)), len(solution1) // 2))
+
+    for index in indices:
+        child1[index] = solution1[index]
+        child2[index] = solution2[index]
+    
+    solution2_rest = [pkg for pkg in solution2 if pkg not in child1]
+    iterator = iter(solution2_rest)
+
+    for i in range(len(child1)):
+        if child1[i] is None:
+            child1[i] = next(iterator)
+
+    solution1_rest = [pkg for pkg in solution1 if pkg not in child2]
+    iterator = iter(solution1_rest)
+
+    for i in range(len(child2)):
+        if child2[i] is None:
+            child2[i] = next(iterator)
+    
+    return child1, child2
+
+
+def order_crossover(solution1, solution2):
+     length = len(solution1)
+     mid_point1, mid_point2 = sorted(random.sample(range(length), 2))
+
+
+     child1 = [None] * length
+     child2 = [None] * length
+
+     child1[mid_point1:mid_point2+1] = solution1[mid_point1:mid_point2+1]
+     child2[mid_point1:mid_point2+1] = solution2[mid_point1:mid_point2+1]  
+
+     current_pos = mid_point2 + 1  
+
+     for i in solution2[mid_point2+1:] + solution2[:mid_point2+1]:
+         if i not in child1:
+            if current_pos >= length:
+                 current_pos = 0
+
+            child1[current_pos] = i
+            current_pos += 1
+
+     current_pos = mid_point2 + 1
+
+     for i in solution1[mid_point2+1:] + solution1[:mid_point2+1]:
+         if i not in child2:
+            if current_pos >= length:
+                 current_pos = 0
+
+            child2[current_pos] = i
+            current_pos += 1
+
+    
+     return child1, child2
+            
+
+
 
 
 def main():
