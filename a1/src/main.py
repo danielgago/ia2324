@@ -2,8 +2,8 @@ import random, math, copy
 import pandas as pd
 import pygame
 
-num_packages = 100
-map_size = 1
+num_packages = 15
+map_size = 60
 WIDTH = 600
 
 
@@ -83,9 +83,9 @@ class DeliveryStats:
                 draw_x = package.coordinates_x * (WIDTH / map_size)
                 draw_y = package.coordinates_y * (WIDTH / map_size)
                 if package.package_type == "fragile":
-                    pygame.draw.circle(screen, RED, (draw_x, draw_y), 5)
-                elif package.package_type == "urgent":
                     pygame.draw.circle(screen, GREEN, (draw_x, draw_y), 5)
+                elif package.package_type == "urgent":
+                    pygame.draw.circle(screen, RED, (draw_x, draw_y), 5)
                 else:
                     pygame.draw.circle(screen, BLUE, (draw_x, draw_y), 5)
             pygame.draw.lines(screen, BLUE, False, delivery_path, 2)
@@ -238,7 +238,7 @@ def main():
     stats1 = DeliveryStats(package_stream, 0, 0, 0)
     stats1.show()
 
-    solution = get_hc_solution(package_stream, 10000)
+    solution = get_hc_solution(package_stream, 1000)
     df2 = solution_to_data_frame(solution)
     print(df2.iloc[0:, :])
 
