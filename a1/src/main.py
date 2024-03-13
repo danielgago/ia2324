@@ -7,7 +7,6 @@ map_size = 60
 WIDTH = 600
 
 
-
 class Package:
     def __init__(self, package_type, coordinates):
         self.package_type = package_type
@@ -221,70 +220,66 @@ def solution_to_data_frame(solution):
     )
     return df
 
+
 def order_based_crossover(solution1, solution2):
-    child1 = [None] * len(solution1)
+    length = len(solution1)
+    child1 = [None] * length
+    child2 = [None] * length
 
-    child2 = [None] * len(solution1)
-
-    indices = sorted(random.sample(range(len(solution1)), len(solution1) // 2))
+    indices = sorted(random.sample(range(length), length // 2))
 
     for index in indices:
         child1[index] = solution1[index]
         child2[index] = solution2[index]
-    
+
     solution2_rest = [pkg for pkg in solution2 if pkg not in child1]
-    iterator = iter(solution2_rest)
+    iterator1 = iter(solution2_rest)
 
     for i in range(len(child1)):
         if child1[i] is None:
-            child1[i] = next(iterator)
+            child1[i] = next(iterator1)
 
     solution1_rest = [pkg for pkg in solution1 if pkg not in child2]
-    iterator = iter(solution1_rest)
+    iterator2 = iter(solution1_rest)
 
     for i in range(len(child2)):
         if child2[i] is None:
-            child2[i] = next(iterator)
-    
+            child2[i] = next(iterator2)
+
     return child1, child2
 
 
 def order_crossover(solution1, solution2):
-     length = len(solution1)
-     mid_point1, mid_point2 = sorted(random.sample(range(length), 2))
+    length = len(solution1)
+    mid_point1, mid_point2 = sorted(random.sample(range(length), 2))
 
+    child1 = [None] * length
+    child2 = [None] * length
 
-     child1 = [None] * length
-     child2 = [None] * length
+    child1[mid_point1:mid_point2] = solution1[mid_point1:mid_point2]
+    child2[mid_point1:mid_point2] = solution2[mid_point1:mid_point2]
 
-     child1[mid_point1:mid_point2+1] = solution1[mid_point1:mid_point2+1]
-     child2[mid_point1:mid_point2+1] = solution2[mid_point1:mid_point2+1]  
+    current_pos = mid_point2 + 1
 
-     current_pos = mid_point2 + 1  
-
-     for i in solution2[mid_point2+1:] + solution2[:mid_point2+1]:
-         if i not in child1:
+    for p in solution2:
+        if p not in child1:
             if current_pos >= length:
-                 current_pos = 0
+                current_pos = 0
 
-            child1[current_pos] = i
+            child1[current_pos] = p
             current_pos += 1
 
-     current_pos = mid_point2 + 1
+    current_pos = mid_point2 + 1
 
-     for i in solution1[mid_point2+1:] + solution1[:mid_point2+1]:
-         if i not in child2:
+    for p in solution1:
+        if p not in child2:
             if current_pos >= length:
-                 current_pos = 0
+                current_pos = 0
 
-            child2[current_pos] = i
+            child2[current_pos] = p
             current_pos += 1
 
-    
-     return child1, child2
-            
-
-
+    return child1, child2
 
 
 def main():
