@@ -284,18 +284,15 @@ def order_crossover(solution1, solution2):
 
 def main():
     package_stream = generate_package_stream(num_packages, map_size)
-
     df1 = solution_to_data_frame(package_stream)
     pd.set_option("display.max_columns", None)
     print(df1.iloc[0:, :])
-
     stats1 = DeliveryStats(package_stream, 0, 0, 0)
     stats1.show()
 
     solution = get_hc_solution(package_stream, 1000)
     df2 = solution_to_data_frame(solution)
     print(df2.iloc[0:, :])
-
     stats2 = DeliveryStats(solution, 0, 0, 0)
     stats2.show()
 
