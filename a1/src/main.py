@@ -1,5 +1,6 @@
 import random, math, copy
 import pandas as pd
+import numpy as np
 import pygame
 
 num_packages = 15
@@ -280,6 +281,45 @@ def order_crossover(solution1, solution2):
             current_pos += 1
 
     return child1, child2
+
+def tournament_selection(population, fitness_scores, tournament_size):
+    selected_indices = random.sample(range(len(population)), tournament_size)
+    selected_fitness = [fitness_scores[i] for i in selected_indices]
+    winner_index = selected_indices[selected_fitness.index(max(selected_fitness))]
+    return population[winner_index]
+
+def roulette_selection(population, fitness_scores):
+    total_fitness = sum(fitness_scores)
+    selection_probs = [score / total_fitness for score in fitness_scores]
+    
+    cumulative_probs = []
+    cum_prob = 0
+    for prob in selection_probs:
+        if (prob == 0):
+            cum_prob += 0.0001
+        else:
+            cum_prob += 1/prob
+        cumulative_probs.append(cum_prob)
+
+    spin = random.random()
+    for i, solution in enumerate(population):
+        if spin <= cumulative_probs[i]:
+            return solution
+        
+def mutate_solution_1(solution):
+    index_1 = np.random.randint(0, len(solution))
+    index_2 = (index_1 + np.random.randint(0, len(solution))) % (len(solution) - 1) # Efficient way to generate a non-repeated index
+    solution[index_1], solution[index_2] = solution[index_2], solution[index_1]
+    return solution
+
+def mutate_solution_2(solution):
+    index = np.random.randint(0, len(solution))
+    solution[index] = np.random.randint(1, slots + 1)
+    return solution
+
+def mutate_solution_3(solution):
+    return (get_neighbor_solution3(solution))
+
 
 
 def main():
