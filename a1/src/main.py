@@ -2,7 +2,7 @@ import random, math, copy
 import pandas as pd
 import pygame
 
-num_packages = 15
+num_packages = 5
 map_size = 60
 WIDTH = 600
 
@@ -173,12 +173,43 @@ def get_neighbour_solution3(solution):
         return get_neighbour_solution2(solution)
 
 
+def get_all_neighbours(solution):
+    neighbours = []
+
+    for i in range(len(solution)):
+        neighbour = copy.deepcopy(solution)
+        package = neighbour.pop(i)
+        for j in range(len(solution)):
+            neighbour2 = copy.deepcopy(neighbour)
+            neighbour2.insert(j, package)
+            neighbours.append(neighbour2)
+
+    for i in range(len(solution)):
+        for j in range(i + 1, len(solution)):
+            neighbour = copy.deepcopy(solution)
+            neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
+            neighbours.append(neighbour)
+    return neighbours
+
+
+def get_best_neighbour(neighbours):
+    best_neighbour = neighbours[0]
+    best_score = evaluate_solution(best_neighbour)
+    for neighbour in neighbours:
+        score = evaluate_solution(neighbour)
+        if score > best_score:
+            best_neighbour = neighbour
+            best_score = score
+    return best_neighbour
+
+
 def get_hc_solution(package_stream, num_iterations, log=False):
     iteration = 0
-    best_solution = package_stream  # Best solution after 'num_iterations' iterations without improvement
+    best_solution = package_stream
     best_score = evaluate_solution(best_solution)
 
-    print(f"Initial score: {best_score}")
+    if log:
+        print(f"Initial score: {best_score}")
 
     while iteration < num_iterations:
         iteration += 1
@@ -189,8 +220,74 @@ def get_hc_solution(package_stream, num_iterations, log=False):
             best_solution = neighbor_solution
             best_score = neighbor_score
             iteration = 0
-            print(f"New best score: {neighbor_score}")
+            if log:
+                print(f"New best score: {neighbor_score}")
 
+    return best_solution
+
+
+def get_fhc_solution(package_stream, log=False):
+    best_solution = package_stream
+    best_score = evaluate_solution(best_solution)
+
+    if log:
+        print(f"Initial score: {best_score}")
+
+    improved = True
+    while improved:
+        improved = False
+        neighbours = get_all_neighbours(best_solution)
+        neighbour_solution = get_best_neighbour(neighbours)
+        neighbor_score = evaluate_solution(neighbour_solution)
+
+        if neighbor_score > best_score:
+            best_solution = neighbour_solution
+            best_score = neighbor_score
+            improved = True
+            if log:
+                print(f"New best score: {neighbor_score}")
+
+    return best_solution
+
+
+def prob(current_score, new_score, temperature):
+    if new_score >= current_score:
+        return 2
+    return math.exp(-(current_score - new_score) / temperature)
+
+
+def get_sa_solution(package_stream, num_iterations, log=False):
+    it = 0
+    it_no_imp = 0
+    temperature = 1000
+    solution = copy.deepcopy(package_stream)
+    score = evaluate_solution(solution)
+
+    best_solution = copy.deepcopy(solution)
+    best_score = score
+
+    if log:
+        print(f"Initial score: {best_score}")
+
+    while it_no_imp < num_iterations:
+        temperature = temperature * 0.999
+        it += 1
+        it_no_imp += 1
+
+        temp_solution = get_neighbour_solution3(solution)
+        temp_score = evaluate_solution(temp_solution)
+
+        if temp_score > best_score:
+            best_solution = copy.deepcopy(temp_solution)
+            best_score = temp_score
+            it_no_imp = 0
+            if log:
+                print(f"New best score: {temp_score}")
+        if prob(score, temp_score, temperature) >= random.random():
+            solution = copy.deepcopy(temp_solution)
+            score = temp_score
+
+    print(f"Final Solution: {best_solution}, score: {best_score}")
     return best_solution
 
 
@@ -284,17 +381,20 @@ def order_crossover(solution1, solution2):
 
 def main():
     package_stream = generate_package_stream(num_packages, map_size)
-    df1 = solution_to_data_frame(package_stream)
-    pd.set_option("display.max_columns", None)
-    print(df1.iloc[0:, :])
     stats1 = DeliveryStats(package_stream, 0, 0, 0)
     stats1.show()
 
-    solution = get_hc_solution(package_stream, 1000)
-    df2 = solution_to_data_frame(solution)
-    print(df2.iloc[0:, :])
-    stats2 = DeliveryStats(solution, 0, 0, 0)
+    solution1 = get_hc_solution(package_stream, 10000, True)
+    stats2 = DeliveryStats(solution1, 0, 0, 0)
     stats2.show()
+
+    solution2 = get_fhc_solution(package_stream, True)
+    stats3 = DeliveryStats(solution2, 0, 0, 0)
+    stats3.show()
+
+    solution3 = get_sa_solution(package_stream, 10000, True)
+    stats4 = DeliveryStats(solution3, 0, 0, 0)
+    stats4.show()
 
 
 if __name__ == "__main__":
