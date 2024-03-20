@@ -320,6 +320,26 @@ def mutate_solution_2(solution):
 def mutate_solution_3(solution):
     return (get_neighbor_solution3(solution))
 
+def get_greatest_fit(population):
+    best_solution = population[0]
+    best_score = evaluate_solution(population[0])
+    for i in range(1, len(population)):
+        score = evaluate_solution(population[i])
+        if score < best_score:
+            best_score = score
+            best_solution = population[i]
+    return best_solution, best_score
+
+def replace_least_fittest(population, offspring):
+    least_fittest_index = 0
+    least_fittest_value = evaluate_solution(population[0])
+    for i in range(1, len(population)):
+        score = evaluate_solution(population[i])
+        if score > least_fittest_value:
+            least_fittest_value = score
+            least_fittest_index = i
+    population[least_fittest_index] = offspring
+
 
 
 def main():
