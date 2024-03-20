@@ -116,6 +116,8 @@ def evaluate_solution(solution):
     total_urgent_cost = 0
 
     for package in solution:
+        if package == None:
+             return 0
         dist = math.sqrt(
             (package.coordinates_x - last_x) ** 2
             + (package.coordinates_y - last_y) ** 2
@@ -260,7 +262,7 @@ def order_crossover(solution1, solution2):
     child1[mid_point1:mid_point2] = solution1[mid_point1:mid_point2]
     child2[mid_point1:mid_point2] = solution2[mid_point1:mid_point2]
 
-    current_pos = mid_point2 + 1
+    current_pos = mid_point2 
 
     for p in solution2:
         if p not in child1:
@@ -270,7 +272,7 @@ def order_crossover(solution1, solution2):
             child1[current_pos] = p
             current_pos += 1
 
-    current_pos = mid_point2 + 1
+    current_pos = mid_point2 
 
     for p in solution1:
         if p not in child2:
@@ -281,6 +283,7 @@ def order_crossover(solution1, solution2):
             current_pos += 1
 
     return child1, child2
+
 
 def tournament_selection(population, fitness_scores, tournament_size):
     selected_indices = random.sample(range(len(population)), tournament_size)
@@ -313,19 +316,21 @@ def mutate_solution_1(solution):
     return solution
 
 def mutate_solution_2(solution):
-    index = np.random.randint(0, len(solution))
-    solution[index] = np.random.randint(1, slots + 1)
+    if len(solution) > 1:  # Ensure there are at least two elements to swap
+        index_1, index_2 = np.random.choice(range(len(solution)), size=2, replace=False)
+        solution[index_1], solution[index_2] = solution[index_2], solution[index_1]
     return solution
 
+
 def mutate_solution_3(solution):
-    return (get_neighbor_solution3(solution))
+    return (get_neighbour_solution3(solution))
 
 def get_greatest_fit(population):
     best_solution = population[0]
     best_score = evaluate_solution(population[0])
-    for i in range(1, len(population)):
+    for i in range(1, len(population)-1):
         score = evaluate_solution(population[i])
-        if score < best_score:
+        if score > best_score:
             best_score = score
             best_solution = population[i]
     return best_solution, best_score
@@ -335,10 +340,56 @@ def replace_least_fittest(population, offspring):
     least_fittest_value = evaluate_solution(population[0])
     for i in range(1, len(population)):
         score = evaluate_solution(population[i])
-        if score > least_fittest_value:
+        if score < least_fittest_value:
             least_fittest_value = score
             least_fittest_index = i
     population[least_fittest_index] = offspring
+
+def genetic_algorithm(num_generations, package_stream, population_size, crossover_func, mutation_func):
+    population = []
+    population.append(package_stream)
+    for i in range(1, population_size):
+        population.append(generate_random_solution(package_stream))
+
+    fitness_scores = [evaluate_solution(solution) for solution in population]
+    best_solution = population[0]
+    best_score = evaluate_solution(best_solution)
+    best_solution_generation = 0
+    print(f"Initial score: {best_score}")
+
+    generation_no = 0
+
+    while (num_generations > 0):
+        generation_no += 1
+
+        tournament_winner = tournament_selection(population, fitness_scores, 4)
+        roulette_winner = roulette_selection(population, fitness_scores)
+
+        offspring1, offspring2 = crossover_func(tournament_winner, roulette_winner)
+
+        offspring1 = mutation_func(offspring1)
+        offspring2 = mutation_func(offspring2)
+
+        replace_least_fittest(population, offspring1)
+        replace_least_fittest(population, offspring2)
+
+        greatest_fit, greatest_fit_score = get_greatest_fit(population)
+        if greatest_fit_score > best_score:
+            best_solution = greatest_fit
+            best_score = greatest_fit_score
+            best_solution_generation = generation_no
+            num_generations -= 1
+        else:
+            num_generations -= 1
+
+        print(f" Current score: {best_score}")
+
+    print(f"  Final score: {best_score}")
+    print(f"  Found on generation {best_solution_generation}")
+
+    return best_solution
+
+    
 
 
 
@@ -351,10 +402,21 @@ def main():
     stats1.show()
 
     solution = get_hc_solution(package_stream, 1000)
+    print(f"Final solution: {solution}")
     df2 = solution_to_data_frame(solution)
     print(df2.iloc[0:, :])
     stats2 = DeliveryStats(solution, 0, 0, 0)
     stats2.show()
+
+    best_solution = genetic_algorithm(1000, package_stream, 50, order_based_crossover, mutate_solution_2)
+    df3 = solution_to_data_frame(best_solution)
+    print(df3.iloc[0:, :])
+    stats3 = DeliveryStats(best_solution, 0, 0, 0)
+    stats3.show()
+
+
+
+
 
 
 if __name__ == "__main__":
