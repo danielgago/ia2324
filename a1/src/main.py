@@ -2,6 +2,8 @@ import random, math, copy
 import pandas as pd
 import numpy as np
 import pygame
+import matplotlib.pyplot as plt
+
 
 num_packages = 15
 map_size = 60
@@ -348,6 +350,7 @@ def replace_least_fittest(population, offspring):
 def genetic_algorithm(num_generations, package_stream, population_size, crossover_func, mutation_func):
     population = []
     population.append(package_stream)
+    scores_history = []
     for i in range(1, population_size):
         population.append(generate_random_solution(package_stream))
 
@@ -383,6 +386,23 @@ def genetic_algorithm(num_generations, package_stream, population_size, crossove
             num_generations -= 1
 
         print(f" Current score: {best_score}")
+        scores_history.append(abs(best_score))
+
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(range(1, generation_no + 1), scores_history, color='blue', s=5)
+    z = np.polyfit(range(1, generation_no + 1), scores_history, 5)
+    p = np.poly1d(z)
+
+    plt.plot(range(1, generation_no + 1), p(range(1, generation_no + 1)), "r--", label='Trend Line')
+
+    plt.title("Genetic Algorithm Performance Over Generations")
+    plt.xlabel("Generation")
+    plt.ylabel("Best Score")
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
 
     print(f"  Final score: {best_score}")
     print(f"  Found on generation {best_solution_generation}")
@@ -413,6 +433,7 @@ def main():
     print(df3.iloc[0:, :])
     stats3 = DeliveryStats(best_solution, 0, 0, 0)
     stats3.show()
+
 
 
 
