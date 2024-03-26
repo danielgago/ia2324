@@ -3,7 +3,7 @@ import pandas as pd
 import pygame
 import copy
 
-num_packages = 15
+num_packages = 10
 map_size = 60
 WIDTH = 600
 
@@ -293,10 +293,12 @@ def get_sa_solution(package_stream, num_iterations, log=False):
 
 
 def get_tabu_tenure(tabu_size):
-    return random.randint(int(tabu_size * 0.6), int(tabu_size * 1.6))
+        return random.randint(1, int(tabu_size * 0.5))   
 
-def get_tabu_neighbour(solution, tabu_list):
-    neighbours_size = random.randint(3, 10)
+    
+
+def get_tabu_neighbour(solution, tabu_list,tabu_size=10):
+    neighbours_size = random.randint(3, tabu_size)
     neighbourhood= []
     for i in range(neighbours_size):
         neighbour = get_neighbour_solution3(solution)
@@ -318,7 +320,7 @@ def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
 
     while iteration < num_iterations:
         iteration += 1
-        neighbours = get_tabu_neighbour(best_candidate, tabu_list)
+        neighbours = get_tabu_neighbour(best_candidate, tabu_list,tabu_size)
         best_candidate_fitness = -float('inf')
         for neighbour in neighbours:
             neighbour_score = evaluate_solution(neighbour)
