@@ -585,6 +585,10 @@ def main():
     stats5 = DeliveryStats(solution4, 0, 0, 0)
     stats5.show()
 
+    solution5 = genetic_algorithm(1000, package_stream, 50, order_based_crossover, mutate_solution_2)
+    stats6 = DeliveryStats(solution5, 0, 0, 0)
+    stats6.show()
+
 
 if __name__ == "__main__":
     main()
