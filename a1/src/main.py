@@ -292,8 +292,8 @@ def get_sa_solution(package_stream, num_iterations, log=False):
     return best_solution
 
 
-def get_tabu_tenure(tabu_size):
-        return random.randint(1, int(tabu_size * 0.5))   
+def get_tabu_tenure(num_packages):
+        return random.randint(1, int(num_packages * 0.5))   
 
     
 
@@ -338,7 +338,7 @@ def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
             if log:
                 print(f"New best score: {best_score}")
 
-        tabu_list.append([best_candidate, get_tabu_tenure(tabu_size)])
+        tabu_list.append([best_candidate, get_tabu_tenure(package_stream.__len__())])
         tabu_list = [tabu for tabu in tabu_list if tabu[1] > 0]
         tabu_list = [[tabu[0], tabu[1] - 1] for tabu in tabu_list]
 
