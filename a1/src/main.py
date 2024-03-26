@@ -304,7 +304,7 @@ def get_tabu_neighbour(solution, tabu_list,tabu_size=10):
         neighbour = get_neighbour_solution3(solution)
         while neighbour in tabu_list:
             neighbour = get_neighbour_solution3(solution)
-        if not any(neighbour == pair[0] for pair in tabu_list):
+        if not any(neighbour == pair[0] for pair in tabu_list) and neighbour not in neighbourhood:
             neighbourhood.append(neighbour)
 
     return neighbourhood
