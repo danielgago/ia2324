@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 
 import copy
 
-num_packages = 10
-map_size = 60
+num_packages = 15
+map_size = 100
 WIDTH = 600
 
 
@@ -297,8 +297,8 @@ def get_sa_solution(package_stream, num_iterations, log=False):
     return best_solution
 
 
-def get_tabu_tenure(num_packages):
-        return random.randint(1, int(num_packages * 0.5))   
+def get_tabu_tenure():
+        return random.randint(3, num_packages)   
 
     
 
@@ -326,27 +326,29 @@ def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
     while iteration < num_iterations:
         iteration += 1
         neighbours = get_tabu_neighbour(best_candidate, tabu_list,tabu_size)
-        best_candidate_fitness = -float('inf')
+        best_candidate_eval = -float('inf')
         for neighbour in neighbours:
             neighbour_score = evaluate_solution(neighbour)
-            if neighbour_score > best_candidate_fitness:
+            if neighbour_score > best_candidate_eval:
                 best_candidate = neighbour
-                best_candidate_fitness = neighbour_score
+                best_candidate_eval = neighbour_score
 
-        if best_candidate_fitness == -float('inf'):
+        if best_candidate_eval == -float('inf'):
             break
 
-        if best_candidate_fitness > best_score:
+        if best_candidate_eval > best_score:
             best_solution = best_candidate
-            best_score = best_candidate_fitness
+            best_score = best_candidate_eval
             iteration = 0
             if log:
                 print(f"New best score: {best_score}")
 
-        tabu_list.append([best_candidate, get_tabu_tenure(package_stream.__len__())])
         tabu_list = [tabu for tabu in tabu_list if tabu[1] > 0]
         tabu_list = [[tabu[0], tabu[1] - 1] for tabu in tabu_list]
+        tabu_list.append([best_candidate, get_tabu_tenure()])
 
+
+        
     return best_solution
 
 
@@ -581,11 +583,11 @@ def main():
     stats4 = DeliveryStats(solution3, 0, 0, 0)
     stats4.show()
 
-    solution4 = get_tabu_solution(package_stream, 10000, 10, True)
+    solution4 = get_tabu_solution(package_stream, 1000, 10, True)
     stats5 = DeliveryStats(solution4, 0, 0, 0)
     stats5.show()
 
-    solution5 = genetic_algorithm(1000, package_stream, 50, order_based_crossover, mutate_solution_2)
+    solution5 = genetic_algorithm(1000, package_stream, 50, order_crossover, mutate_solution_2)
     stats6 = DeliveryStats(solution5, 0, 0, 0)
     stats6.show()
 
