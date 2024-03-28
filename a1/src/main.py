@@ -34,7 +34,7 @@ def main():
     show_ts_graph(scores)
 
     
-    solution5 = genetic_algorithm(1000, package_stream, 200, order_crossover, mutate_solution_3)
+    solution5 = genetic_algorithm(2000, package_stream, 200, order_based_crossover, mutate_solution_3)
     display_path(solution5)
     
 

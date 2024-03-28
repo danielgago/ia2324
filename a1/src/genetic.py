@@ -75,22 +75,20 @@ def tournament_selection(population, fitness_scores, tournament_size):
 
 
 def roulette_selection(population, fitness_scores):
-    total_fitness = sum(fitness_scores)
-    selection_probs = [score / total_fitness for score in fitness_scores]
+    total_fitness = abs(sum(fitness_scores))
+    selection_probs = [abs(score) / total_fitness for score in fitness_scores]
 
     cumulative_probs = []
     cum_prob = 0
     for prob in selection_probs:
-        if prob == 0:
-            cum_prob += 0.0001
-        else:
-            cum_prob += 1 / prob
+        cum_prob += prob  # Accumulate the selection probability
         cumulative_probs.append(cum_prob)
 
     spin = random.random()
     for i, solution in enumerate(population):
         if spin <= cumulative_probs[i]:
             return solution
+
 
 
 def mutate_solution_1(solution):
@@ -142,7 +140,7 @@ def genetic_algorithm(
     population.append(package_stream)
     scores_history = []
     for i in range(1, population_size):
-        population.append(generate_random_solution(package_stream))
+        population.append(generate_random_solution(population[i - 1]))
 
     fitness_scores = [evaluate_solution(solution) for solution in population]
     best_solution = population[0]
@@ -152,10 +150,17 @@ def genetic_algorithm(
 
     generation_no = 0
 
+    initial_tournament_size = 20
+    final_tournament_size = 5
+    tournament_size = initial_tournament_size
+
     while num_generations > 0:
+
+        tournament_size = max(final_tournament_size, 
+                              initial_tournament_size - int(generation_no * (initial_tournament_size - final_tournament_size) / num_generations))
         generation_no += 1
 
-        tournament_winner = tournament_selection(population, fitness_scores, 20)
+        tournament_winner = tournament_selection(population, fitness_scores, tournament_size)
         roulette_winner = roulette_selection(population, fitness_scores)
 
         offspring1, offspring2 = crossover_func(tournament_winner, roulette_winner)
