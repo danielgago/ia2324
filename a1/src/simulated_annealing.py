@@ -12,7 +12,7 @@ def prob(current_score, new_score, temperature):
     return math.exp(-(current_score - new_score) / temperature)
 
 
-def get_sa_solution(package_stream, num_iterations, log=False):
+def get_sa_solution(package_stream, num_iterations, log=False, scores_info=False):
     it = 0
     it_no_imp = 0
     temperature = 1000
@@ -21,12 +21,14 @@ def get_sa_solution(package_stream, num_iterations, log=False):
 
     best_solution = copy.deepcopy(solution)
     best_score = score
+    
+    scores = []
 
     if log:
         print(f"Initial score: {best_score}")
 
     while it_no_imp < num_iterations:
-        temperature = temperature * 0.999
+        temperature = temperature * 0.99
         it += 1
         it_no_imp += 1
 
@@ -42,5 +44,9 @@ def get_sa_solution(package_stream, num_iterations, log=False):
         if prob(score, temp_score, temperature) >= random.random():
             solution = copy.deepcopy(temp_solution)
             score = temp_score
-
-    return best_solution
+        scores.append((best_score, score))
+        
+    if(scores_info):
+        return best_solution, scores
+    else:
+        return best_solution

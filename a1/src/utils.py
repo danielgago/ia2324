@@ -3,6 +3,8 @@ import math
 import random
 import pygame
 import pandas as pd
+import numpy as np
+from matplotlib import pyplot as plt
 
 
 def generate_random_solution(package_stream):
@@ -128,3 +130,17 @@ def solution_to_data_frame(solution):
         ],
     )
     return df
+
+def show_sa_graph(scores):
+    best_scores, current_scores = zip(*scores)
+
+    iterations = np.arange(1, len(scores) + 1)
+
+    plt.plot(iterations, best_scores, label='Best Score')
+    plt.plot(iterations, current_scores, label='Current Score')
+    plt.xlabel('Iterations')
+    plt.ylabel('Score')
+    plt.title('Simulated Annealing Progress')
+    plt.legend()
+    plt.grid(True)
+    plt.show()

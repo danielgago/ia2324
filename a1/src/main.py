@@ -23,16 +23,19 @@ def main():
     display_path(solution2)
     """
 
-    solution3 = get_sa_solution(package_stream, 10000, True)
+    solution3, scores = get_sa_solution(package_stream, 100, True, True)
     display_path(solution3)
+    show_sa_graph(scores)
 
     """
     solution4 = get_tabu_solution(package_stream, 100, int(num_packages /2), num_packages ,True)
     display_path(solution4)
     """
 
-    solution5 = genetic_algorithm(10000, package_stream, 50, order_based_crossover, mutate_solution_2)
+    """
+    solution5 = genetic_algorithm(1000, package_stream, 50, order_crossover, mutate_solution_1)
     display_path(solution5)
+    """
 
 
 if __name__ == "__main__":
