@@ -5,8 +5,8 @@ from simulated_annealing import *
 from tabu_search import *
 from genetic import *
 
-num_packages = 10
-map_size = 60
+num_packages = 50
+map_size = 100
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
     solution3 = get_sa_solution(package_stream, 10000, True)
     display_path(solution3)
 
-    solution4 = get_tabu_solution(package_stream, 100, 5, 20 ,True)
+    solution4 = get_tabu_solution(package_stream, 200, int(num_packages /2 ), num_packages ,True)
     display_path(solution4)
 
 
