@@ -155,7 +155,7 @@ def genetic_algorithm(
     while num_generations > 0:
         generation_no += 1
 
-        tournament_winner = tournament_selection(population, fitness_scores, 4)
+        tournament_winner = tournament_selection(population, fitness_scores, 20)
         roulette_winner = roulette_selection(population, fitness_scores)
 
         offspring1, offspring2 = crossover_func(tournament_winner, roulette_winner)
@@ -171,11 +171,11 @@ def genetic_algorithm(
             best_solution = greatest_fit
             best_score = greatest_fit_score
             best_solution_generation = generation_no
-            num_generations -= 1
-        else:
-            num_generations -= 1
+
+        num_generations -= 1
 
         print(f" Current score: {best_score}")
+        print(f" Generation: {generation_no}")
         scores_history.append(abs(best_score))
 
     plt.figure(figsize=(10, 6))

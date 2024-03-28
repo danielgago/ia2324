@@ -33,10 +33,10 @@ def main():
     display_path(solution4)
     show_ts_graph(scores)
 
-    """
-    solution5 = genetic_algorithm(1000, package_stream, 50, order_crossover, mutate_solution_1)
+    
+    solution5 = genetic_algorithm(1000, package_stream, 200, order_crossover, mutate_solution_3)
     display_path(solution5)
-    """
+    
 
 
 if __name__ == "__main__":
