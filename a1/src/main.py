@@ -12,7 +12,11 @@ WIDTH = 600
 
 
 class Package:
+    curr_id = 0
+
     def __init__(self, package_type, coordinates):
+        self.id = Package.curr_id
+        Package.curr_id += 1
         self.package_type = package_type
         self.coordinates_x = coordinates[0]
         self.coordinates_y = coordinates[1]
@@ -26,15 +30,13 @@ class Package:
                 100, 240
             )  # Delivery time in minutes (100 minutes to 4 hours)
 
+    def __str__(self):
+        return f"{self.id}"
 
-class DeliveredPackage(Package):
-    def __init__(self, package, broken, delivery_time):
-        super().__init__(
-            package.package_type, (package.coordinates_x, package.coordinates_y)
-        )
-        if package.package_type == "fragile":
-            self.broken = broken
-        self.delivery_time = delivery_time
+    def __eq__(self, other):
+        if not isinstance(other, Package):
+            return False
+        return self.id == other.id
 
 
 class DeliveryStats:
@@ -111,16 +113,17 @@ def generate_random_solution(package_stream):
 
 
 def evaluate_solution(solution):
+    #declare the variables in one line
+    
     last_x = 0
     last_y = 0
     total_dist = 0
     total_breaking_cost = 0
-    total_broken = 0
     total_urgent_cost = 0
 
     for package in solution:
         if package == None:
-             return 0
+            return 0
         dist = math.sqrt(
             (package.coordinates_x - last_x) ** 2
             + (package.coordinates_y - last_y) ** 2
@@ -298,21 +301,25 @@ def get_sa_solution(package_stream, num_iterations, log=False):
 
 
 def get_tabu_tenure():
-        return random.randint(3, num_packages)   
+    return random.randint(3, num_packages)
 
-    
 
-def get_tabu_neighbour(solution, tabu_list,tabu_size=10):
+def get_tabu_neighbour(solution, tabu_list, tabu_size=10):
     neighbours_size = random.randint(3, tabu_size)
-    neighbourhood= []
+    neighbourhood = []
     for i in range(neighbours_size):
         neighbour = get_neighbour_solution3(solution)
         while neighbour in tabu_list:
             neighbour = get_neighbour_solution3(solution)
-        if not any(neighbour == pair[0] for pair in tabu_list) and neighbour not in neighbourhood:
+        if (
+            not any(neighbour == pair[0] for pair in tabu_list)
+            and neighbour not in neighbourhood
+        ):
             neighbourhood.append(neighbour)
 
     return neighbourhood
+
+
 def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
     iteration = 0
     best_solution = package_stream
@@ -325,15 +332,15 @@ def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
 
     while iteration < num_iterations:
         iteration += 1
-        neighbours = get_tabu_neighbour(best_candidate, tabu_list,tabu_size)
-        best_candidate_eval = -float('inf')
+        neighbours = get_tabu_neighbour(best_candidate, tabu_list, tabu_size)
+        best_candidate_eval = -float("inf")
         for neighbour in neighbours:
             neighbour_score = evaluate_solution(neighbour)
             if neighbour_score > best_candidate_eval:
                 best_candidate = neighbour
                 best_candidate_eval = neighbour_score
 
-        if best_candidate_eval == -float('inf'):
+        if best_candidate_eval == -float("inf"):
             break
 
         if best_candidate_eval > best_score:
@@ -347,8 +354,6 @@ def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
         tabu_list = [[tabu[0], tabu[1] - 1] for tabu in tabu_list]
         tabu_list.append([best_candidate, get_tabu_tenure()])
 
-
-        
     return best_solution
 
 
@@ -417,7 +422,7 @@ def order_crossover(solution1, solution2):
     child1[mid_point1:mid_point2] = solution1[mid_point1:mid_point2]
     child2[mid_point1:mid_point2] = solution2[mid_point1:mid_point2]
 
-    current_pos = mid_point2 
+    current_pos = mid_point2
 
     for p in solution2:
         if p not in child1:
@@ -427,7 +432,7 @@ def order_crossover(solution1, solution2):
             child1[current_pos] = p
             current_pos += 1
 
-    current_pos = mid_point2 
+    current_pos = mid_point2
 
     for p in solution1:
         if p not in child2:
@@ -446,29 +451,34 @@ def tournament_selection(population, fitness_scores, tournament_size):
     winner_index = selected_indices[selected_fitness.index(max(selected_fitness))]
     return population[winner_index]
 
+
 def roulette_selection(population, fitness_scores):
     total_fitness = sum(fitness_scores)
     selection_probs = [score / total_fitness for score in fitness_scores]
-    
+
     cumulative_probs = []
     cum_prob = 0
     for prob in selection_probs:
-        if (prob == 0):
+        if prob == 0:
             cum_prob += 0.0001
         else:
-            cum_prob += 1/prob
+            cum_prob += 1 / prob
         cumulative_probs.append(cum_prob)
 
     spin = random.random()
     for i, solution in enumerate(population):
         if spin <= cumulative_probs[i]:
             return solution
-        
+
+
 def mutate_solution_1(solution):
     index_1 = np.random.randint(0, len(solution))
-    index_2 = (index_1 + np.random.randint(0, len(solution))) % (len(solution) - 1) # Efficient way to generate a non-repeated index
+    index_2 = (index_1 + np.random.randint(0, len(solution))) % (
+        len(solution) - 1
+    )  # Efficient way to generate a non-repeated index
     solution[index_1], solution[index_2] = solution[index_2], solution[index_1]
     return solution
+
 
 def mutate_solution_2(solution):
     if len(solution) > 1:  # Ensure there are at least two elements to swap
@@ -478,17 +488,19 @@ def mutate_solution_2(solution):
 
 
 def mutate_solution_3(solution):
-    return (get_neighbour_solution3(solution))
+    return get_neighbour_solution3(solution)
+
 
 def get_greatest_fit(population):
     best_solution = population[0]
     best_score = evaluate_solution(population[0])
-    for i in range(1, len(population)-1):
+    for i in range(1, len(population) - 1):
         score = evaluate_solution(population[i])
         if score > best_score:
             best_score = score
             best_solution = population[i]
     return best_solution, best_score
+
 
 def replace_least_fittest(population, offspring):
     least_fittest_index = 0
@@ -500,7 +512,10 @@ def replace_least_fittest(population, offspring):
             least_fittest_index = i
     population[least_fittest_index] = offspring
 
-def genetic_algorithm(num_generations, package_stream, population_size, crossover_func, mutation_func):
+
+def genetic_algorithm(
+    num_generations, package_stream, population_size, crossover_func, mutation_func
+):
     population = []
     population.append(package_stream)
     scores_history = []
@@ -515,7 +530,7 @@ def genetic_algorithm(num_generations, package_stream, population_size, crossove
 
     generation_no = 0
 
-    while (num_generations > 0):
+    while num_generations > 0:
         generation_no += 1
 
         tournament_winner = tournament_selection(population, fitness_scores, 4)
@@ -541,13 +556,17 @@ def genetic_algorithm(num_generations, package_stream, population_size, crossove
         print(f" Current score: {best_score}")
         scores_history.append(abs(best_score))
 
-
     plt.figure(figsize=(10, 6))
-    plt.scatter(range(1, generation_no + 1), scores_history, color='blue', s=5)
+    plt.scatter(range(1, generation_no + 1), scores_history, color="blue", s=5)
     z = np.polyfit(range(1, generation_no + 1), scores_history, 5)
     p = np.poly1d(z)
 
-    plt.plot(range(1, generation_no + 1), p(range(1, generation_no + 1)), "r--", label='Trend Line')
+    plt.plot(
+        range(1, generation_no + 1),
+        p(range(1, generation_no + 1)),
+        "r--",
+        label="Trend Line",
+    )
 
     plt.title("Genetic Algorithm Performance Over Generations")
     plt.xlabel("Generation")
@@ -556,40 +575,64 @@ def genetic_algorithm(num_generations, package_stream, population_size, crossove
     plt.legend()
     plt.show()
 
-
     print(f"  Final score: {best_score}")
     print(f"  Found on generation {best_solution_generation}")
 
     return best_solution
 
-    
 
+def print_solution(solution):
+    sol = "["
+    for package in solution:
+        sol += f"{package}, "
+    sol = sol[:-2]
+    sol += "]"
+    print(sol)
 
 
 def main():
     package_stream = generate_package_stream(num_packages, map_size)
-    stats1 = DeliveryStats(package_stream, 0, 0, 0)
-    stats1.show()
+    random_stream = generate_random_solution(package_stream)
 
+    print_solution(package_stream)
+    print_solution(random_stream)
+
+    a1, b1 = order_based_crossover(package_stream, random_stream)
+    print_solution(a1)
+    print_solution(b1)
+    a2, b2 = order_crossover(package_stream, random_stream)
+    print_solution(a2)
+    print_solution(b2)
+
+    """
     solution1 = get_hc_solution(package_stream, 10000, True)
     stats2 = DeliveryStats(solution1, 0, 0, 0)
     stats2.show()
+    """
 
+    """
     solution2 = get_fhc_solution(package_stream, True)
     stats3 = DeliveryStats(solution2, 0, 0, 0)
     stats3.show()
+    """
 
+    """
     solution3 = get_sa_solution(package_stream, 10000, True)
     stats4 = DeliveryStats(solution3, 0, 0, 0)
     stats4.show()
+    """
 
-    solution4 = get_tabu_solution(package_stream, 1000, 10, True)
+    """
+    solution4 = get_tabu_solution(package_stream, 10000, 10, True)
     stats5 = DeliveryStats(solution4, 0, 0, 0)
     stats5.show()
+    """
 
-    solution5 = genetic_algorithm(1000, package_stream, 50, order_crossover, mutate_solution_2)
+    """
+    solution5 = genetic_algorithm(1000, package_stream, 50, order_based_crossover, mutate_solution_2)
     stats6 = DeliveryStats(solution5, 0, 0, 0)
     stats6.show()
+    """
 
 
 if __name__ == "__main__":
