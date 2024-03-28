@@ -300,11 +300,7 @@ def get_sa_solution(package_stream, num_iterations, log=False):
     return best_solution
 
 
-def get_tabu_tenure():
-    return random.randint(3, num_packages)
-
-
-def get_tabu_neighbour(solution, tabu_list, tabu_size=10):
+def get_tabu_neighbour(solution, tabu_list,tabu_size=10):
     neighbours_size = random.randint(3, tabu_size)
     neighbourhood = []
     for i in range(neighbours_size):
@@ -319,9 +315,9 @@ def get_tabu_neighbour(solution, tabu_list, tabu_size=10):
 
     return neighbourhood
 
-
-def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
+def get_tabu_solution(package_stream, num_iterations, base_tabu_tenure, max_stagnation, log=False):
     iteration = 0
+    stagnation_count = 0
     best_solution = package_stream
     best_candidate = package_stream
     best_score = evaluate_solution(best_solution)
@@ -332,8 +328,8 @@ def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
 
     while iteration < num_iterations:
         iteration += 1
-        neighbours = get_tabu_neighbour(best_candidate, tabu_list, tabu_size)
-        best_candidate_eval = -float("inf")
+        neighbours = get_tabu_neighbour(best_candidate, tabu_list, base_tabu_tenure)
+        best_candidate_eval = -float('inf')
         for neighbour in neighbours:
             neighbour_score = evaluate_solution(neighbour)
             if neighbour_score > best_candidate_eval:
@@ -347,14 +343,23 @@ def get_tabu_solution(package_stream, num_iterations, tabu_size, log=False):
             best_solution = best_candidate
             best_score = best_candidate_eval
             iteration = 0
+            stagnation_count = 0
             if log:
                 print(f"New best score: {best_score}")
+        else:
+            stagnation_count += 1
+            if stagnation_count >= max_stagnation:
+                base_tabu_tenure += 1
+            else:
+                base_tabu_tenure = max(base_tabu_tenure - 1, 3)
 
         tabu_list = [tabu for tabu in tabu_list if tabu[1] > 0]
         tabu_list = [[tabu[0], tabu[1] - 1] for tabu in tabu_list]
-        tabu_list.append([best_candidate, get_tabu_tenure()])
+        tabu_list.append([best_candidate, base_tabu_tenure])
 
     return best_solution
+
+
 
 
 def solution_to_data_frame(solution):
@@ -621,9 +626,8 @@ def main():
     stats4 = DeliveryStats(solution3, 0, 0, 0)
     stats4.show()
     """
-
     """
-    solution4 = get_tabu_solution(package_stream, 10000, 10, True)
+    solution4 = get_tabu_solution(package_stream, 1000, int(num_packages /2), num_packages ,True)
     stats5 = DeliveryStats(solution4, 0, 0, 0)
     stats5.show()
     """
