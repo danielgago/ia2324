@@ -138,6 +138,7 @@ def genetic_algorithm(
 ):
     population = []
     population.append(package_stream)
+    current_scores_history = []
     scores_history = []
     for i in range(1, population_size):
         population.append(generate_random_solution(population[i - 1]))
@@ -146,6 +147,7 @@ def genetic_algorithm(
     best_solution = population[0]
     best_score = evaluate_solution(best_solution)
     best_solution_generation = 0
+    current_score = best_score
     print(f"Initial score: {best_score}")
 
     generation_no = 0
@@ -160,6 +162,8 @@ def genetic_algorithm(
                               initial_tournament_size - int(generation_no * (initial_tournament_size - final_tournament_size) / num_generations))
         generation_no += 1
 
+        fitness_scores = [evaluate_solution(solution) for solution in population]
+
         tournament_winner = tournament_selection(population, fitness_scores, tournament_size)
         roulette_winner = roulette_selection(population, fitness_scores)
 
@@ -172,6 +176,7 @@ def genetic_algorithm(
         replace_least_fittest(population, offspring2)
 
         greatest_fit, greatest_fit_score = get_greatest_fit(population)
+        current_score = greatest_fit_score
         if greatest_fit_score > best_score:
             best_solution = greatest_fit
             best_score = greatest_fit_score
@@ -179,25 +184,19 @@ def genetic_algorithm(
 
         num_generations -= 1
 
-        print(f" Current score: {best_score}")
+        print(f" Best score so far: {best_score}")
         print(f" Generation: {generation_no}")
         scores_history.append(abs(best_score))
+        current_scores_history.append(abs(current_score))
 
     plt.figure(figsize=(10, 6))
-    plt.scatter(range(1, generation_no + 1), scores_history, color="blue", s=5)
-    z = np.polyfit(range(1, generation_no + 1), scores_history, 5)
-    p = np.poly1d(z)
-
-    plt.plot(
-        range(1, generation_no + 1),
-        p(range(1, generation_no + 1)),
-        "r--",
-        label="Trend Line",
-    )
+    generations = range(1, generation_no + 1)
+    plt.scatter(generations, scores_history, color="blue", s=5, label="Best Score")
+    plt.scatter(generations, current_scores_history, color="red", s=5, label="Current Score", alpha=0.6)
 
     plt.title("Genetic Algorithm Performance Over Generations")
     plt.xlabel("Generation")
-    plt.ylabel("Best Score")
+    plt.ylabel("Score")
     plt.grid(True)
     plt.legend()
     plt.show()
