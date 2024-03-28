@@ -23,14 +23,15 @@ def main():
     display_path(solution2)
     """
 
+    """
     solution3, scores = get_sa_solution(package_stream, 100, True, True)
     display_path(solution3)
     show_sa_graph(scores)
-    
     """
-    solution4 = get_tabu_solution(package_stream, 200, int(num_packages /2 ), num_packages ,True)
+
+    solution4,scores = get_tabu_solution(package_stream, 200, int(num_packages /2 ), num_packages ,True,True)
     display_path(solution4)
-    """
+    show_ts_graph(scores)
 
     """
     solution5 = genetic_algorithm(1000, package_stream, 50, order_crossover, mutate_solution_1)

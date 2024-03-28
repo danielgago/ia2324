@@ -144,3 +144,17 @@ def show_sa_graph(scores):
     plt.legend()
     plt.grid(True)
     plt.show()
+
+def show_ts_graph(scores):
+    best_scores, current_scores = zip(*scores)
+
+    iterations = np.arange(1, len(scores) + 1)
+
+    plt.plot(iterations, best_scores, label='Best Score')
+    plt.plot(iterations, current_scores, label='Current Score')
+    plt.xlabel('Iterations')
+    plt.ylabel('Score')
+    plt.title('Tabu Search Progress')
+    plt.legend()
+    plt.grid(True)
+    plt.show()

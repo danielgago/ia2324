@@ -19,14 +19,14 @@ def get_tabu_neighbour(solution, tabu_list,tabu_size=10):
 
     return neighbourhood
 
-def get_tabu_solution(package_stream, num_iterations, base_tabu_tenure, max_stagnation, log=False):
+def get_tabu_solution(package_stream, num_iterations, base_tabu_tenure, max_stagnation, log=False, scores_info=False):
     iteration = 0
     stagnation_count = 0
     best_solution = package_stream
     best_candidate = package_stream
     best_score = evaluate_solution(best_solution)
     tabu_list = []
-
+    scores = []
     if log:
         print(f"Initial score: {best_score}")
 
@@ -56,9 +56,11 @@ def get_tabu_solution(package_stream, num_iterations, base_tabu_tenure, max_stag
                 base_tabu_tenure += 1
             else:
                 base_tabu_tenure = max(base_tabu_tenure - 1, 3)
-
+        scores.append((best_score, best_candidate_eval))
         tabu_list = [tabu for tabu in tabu_list if tabu[1] > 0]
         tabu_list = [[tabu[0], tabu[1] - 1] for tabu in tabu_list]
         tabu_list.append([best_candidate, base_tabu_tenure])
 
+    if (scores_info):
+        return best_solution, scores
     return best_solution
