@@ -190,9 +190,16 @@ def genetic_algorithm(
         current_scores_history.append(abs(current_score))
 
     plt.figure(figsize=(10, 6))
-    generations = range(1, generation_no + 1)
-    plt.scatter(generations, scores_history, color="blue", s=5, label="Best Score")
-    plt.scatter(generations, current_scores_history, color="red", s=5, label="Current Score", alpha=0.6)
+    generations = np.array(range(1, generation_no + 1))
+    scores = np.array(scores_history)
+
+
+    plt.scatter(generations, scores, color="blue", s=5, label="Best Score")
+
+
+    z = np.polyfit(generations, scores, 5)  
+    p = np.poly1d(z)
+    plt.plot(generations, p(generations), "r--", label="Trend Line")
 
     plt.title("Genetic Algorithm Performance Over Generations")
     plt.xlabel("Generation")
