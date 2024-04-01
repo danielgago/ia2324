@@ -3,7 +3,7 @@ import random
 from neighbours import get_random_neighbour_solution
 from utils import evaluate_solution
 
-
+# Obtains a random number of neighbours for the current solution, ensuring that they are not in the tabu list.
 def get_tabu_neighbour(solution, tabu_list):
     neighbours_size = random.randint(3, 10)
     neighbourhood = []
@@ -19,6 +19,9 @@ def get_tabu_neighbour(solution, tabu_list):
 
     return neighbourhood
 
+# Executes the tabu search algorithm over a specified number of iterations. It has a base tabu tenure and a maximum stagnation count.
+# The base tabu tenure is used to determine the number of iterations a solution is kept in the tabu list. It also increases when the algorithm stagnates.
+# The maximum stagnation count is used to determine when the algorithm has stagnated.
 def get_tabu_solution(package_stream,num_iterations, base_tabu_tenure, max_stagnation, log=False, scores_info=False):
     iteration = 0
     stagnation_count = 0

@@ -30,6 +30,26 @@ To run our project all you need to do is:
 
 Note: You need to be in ```a1/src``` directory. 
 
+## Usage
+
+Firstly, the user will be asked to choose the number of packages, which can be defined by the user or already defined. There is also an option to run multiple instances of the problem with different numbers of packages, already predefined. After that, the user will be asked to choose the map size, which can also be defined by the user or already defined.
+Then, the user will be asked to choose the algorithm(s) to run. The options are:
+
+ - Hill Climbing
+ - Steepest Ascent Hill Climbing
+ - Simulated Annealing
+ - Tabu Search
+ - Genetic Algorithm
+ - All algorithms
+ - Compare 2 algorithms at a time
 
 
+Every time the user chooses the Simulated Annealing algorithm, the user will be asked to choose the cooling schedule. Being able to choose a custom value or a default one(0.99).
 
+After the algoritm(s) finish, the user will receive a message with the best solution found and the time it took to find it, as well as a visual representation of the solution and graph. In case of comparisons, the user will receive a message with the best solution found by each algorithm and the time it took to find it, as well as a visual representation of the solution and graph comparing the two algorithms.
+
+## Authors
+
+- Daniel Gago ([lovedzhd](https://github.com/lovedzhd))
+- João Teixeira ([JTomas12](https://github.com/JTomas12))
+- José Santos ([Sereno1710](https://github.com/Sereno1710))

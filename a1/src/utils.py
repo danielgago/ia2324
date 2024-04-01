@@ -57,17 +57,15 @@ def print_solution_ids(solution):
         sol += f"{package}, "
     sol = sol[:-2]
     sol += "]"
-    print(sol)
+    return sol
 
 # Visualize the delivery path of packages using pygame.
-def display_path(solution):
+def display_path(solution,map_size):
     WIDTH = 600
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
     GREEN = (0, 255, 0)
     BLUE = (0, 0, 255)
-    
-    map_size = 100
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, WIDTH))
@@ -206,7 +204,7 @@ def show_sa_graph(scores):
     plt.grid(True)
     plt.show()
 
-# Compare scores of basic and Steepest Ascent Hill Climbing for different package counts.
+# Compare scores of basic Hill Climbing and Simulated Annealing for different package counts.
 def show_sa_score_comparison_graph(num_packages_list, hc_scores, sa_score1, sa_score2, sa_score3, sa_score4):
     plt.plot(num_packages_list, hc_scores, label='Hill Climbing')
     plt.plot(num_packages_list, sa_score1, label='SA: Cooling = 0.9')
@@ -219,7 +217,8 @@ def show_sa_score_comparison_graph(num_packages_list, hc_scores, sa_score1, sa_s
     plt.legend()
     plt.grid(True)
     plt.show()
-    
+
+# Compare execution times of basic Hill Climbing and Simulated Annealing for different package counts.
 def show_sa_time_comparison_graph(num_packages_list, hc_times, sa_time1, sa_time2, sa_time3, sa_time4):
     plt.plot(num_packages_list, hc_times, label='Hill Climbing')
     plt.plot(num_packages_list, sa_time1, label='SA: Cooling = 0.9')
@@ -268,11 +267,16 @@ def show_ga_graph(scores):
 
 # Compare best scores achieved by different algorithms for varying numbers of packages.   
 def show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores, ts_scores, ga_scores):
-    plt.plot(num_packages_list, hc_scores, label='Hill Climbing')
-    plt.plot(num_packages_list, sahc_scores, label='Steepest Ascent Hill Climbing')
-    plt.plot(num_packages_list, sa_scores, label='Simulated Annealing')
-    plt.plot(num_packages_list, ts_scores, label='Tabu Search')
-    plt.plot(num_packages_list, ga_scores, label='Genetic Algorithm')
+    if(len(hc_scores) != 0):
+        plt.plot(num_packages_list, hc_scores, label='Hill Climbing')
+    if(len(sahc_scores) != 0):
+        plt.plot(num_packages_list, sahc_scores, label='Steepest Ascent Hill Climbing')
+    if(len(sa_scores) != 0):
+        plt.plot(num_packages_list, sa_scores, label='Simulated Annealing')
+    if(len(ts_scores) != 0):
+        plt.plot(num_packages_list, ts_scores, label='Tabu Search')
+    if(len(ga_scores) != 0):
+        plt.plot(num_packages_list, ga_scores, label='Genetic Algorithm')
     plt.xlabel('Number of Packages')
     plt.ylabel('Best Score')
     plt.title('Algorithm Best Solution Comparison')
@@ -282,11 +286,16 @@ def show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores,
     
 # Compare execution times of different algorithms for varying numbers of packages.
 def show_times_graph(num_packages_list, hc_times, sahc_times, sa_times, ts_times, ga_times):
-    plt.plot(num_packages_list, hc_times, label='Hill Climbing')
-    plt.plot(num_packages_list, sahc_times, label='Steepest Ascent Hill Climbing')
-    plt.plot(num_packages_list, sa_times, label='Simulated Annealing')
-    plt.plot(num_packages_list, ts_times, label='Tabu Search')
-    plt.plot(num_packages_list, ga_times, label='Genetic Algorithm')
+    if(len(hc_times) != 0):
+        plt.plot(num_packages_list, hc_times, label='Hill Climbing')
+    if(len(sahc_times) != 0):
+        plt.plot(num_packages_list, sahc_times, label='Steepest Ascent Hill Climbing')
+    if(len(sa_times) != 0):
+        plt.plot(num_packages_list, sa_times, label='Simulated Annealing')
+    if(len(ts_times) != 0):
+        plt.plot(num_packages_list, ts_times, label='Tabu Search')
+    if(len(ga_times) != 0):
+        plt.plot(num_packages_list, ga_times, label='Genetic Algorithm')
     plt.xlabel('Number of Packages')
     plt.ylabel('Execution Time (s)')
     plt.title('Algorithm Execution Time Comparison')
@@ -317,16 +326,24 @@ def show_times_graph_single(num_packages_list, algo_times, algorithm_name):
 
 # Compare best scores achieved by different algorithms for the same number of packages.
 def show_best_scores_graph_same(num_packages, hc_score, sahc_score, sa_score, ts_score, ga_score):
-    plt.bar(['HC', 'SAHC', 'SA', 'T', 'GEN'], [-hc_score, -sahc_score, -sa_score, -ts_score, -ga_score])
-    plt.ylabel('Best Score')
-    plt.title(f'Algorithm Best Solution Comparison ({num_packages} packages)')
-    plt.grid(True)
-    plt.show()
+    scores = [[hc_score, 'HC'], [sahc_score, 'SAHC'], [sa_score,'SA'],[ ts_score, 'TS'], [ga_score,'GEN']]
+    valid_scores = [[score,algorithm] for score,algorithm in scores if score != 0]
+    
+    if len(valid_scores) > 0:
+        plt.bar([algorithm for score,algorithm in valid_scores], [-score for score,algorithm in valid_scores])
+        plt.ylabel('Best Score')
+        plt.title(f'Algorithm Best Solution Comparison ({num_packages} packages)')
+        plt.grid(True)
+        plt.show()
 
 # Compare execution times of different algorithms for the same number of packages.
 def show_times_graph_same(num_packages, hc_time, sahc_time, sa_time, ts_time, ga_time):
-    plt.bar(['HC', 'SAHC', 'SA', 'T', 'GEN'], [hc_time, sahc_time, sa_time, ts_time, ga_time])
-    plt.ylabel('Execution Time (s)')
-    plt.title(f'Algorithm Execution Time Comparison ({num_packages} packages)')
-    plt.grid(True)
-    plt.show()
+    times = [[hc_time, 'HC'], [sahc_time, 'SAHC'], [sa_time,'SA'],[ ts_time, 'TS'], [ga_time,'GEN']]
+    valid_times = [[time,algorithm] for time,algorithm in times if time != 0]
+    
+    if len(valid_times) > 0:
+        plt.bar([algorithm for time,algorithm in valid_times], [time for time,algorthm in valid_times])
+        plt.ylabel('Execution Time (s)')
+        plt.title(f'Algorithm Execution Time Comparison ({num_packages} packages)')
+        plt.grid(True)
+        plt.show()
