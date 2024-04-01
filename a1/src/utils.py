@@ -168,6 +168,23 @@ def show_ts_graph(scores):
     plt.legend()
     plt.grid(True)
     plt.show()
+
+def show_ga_graph(scores):
+    best_scores = scores
+
+    generations = np.arange(1, len(scores) + 1)
+
+    z = np.polyfit(generations, scores, 5)  
+    p = np.poly1d(z)
+    plt.plot(generations, p(generations), "r--", label="Trend Line")
+
+    plt.plot(generations, best_scores, label='Best Score')
+    plt.xlabel('Generations')
+    plt.ylabel('Score')
+    plt.title('Genetic Algorithm Progress')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
     
 def show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores, ts_scores, ga_scores):
     plt.plot(num_packages_list, hc_scores, label='Hill Climbing')

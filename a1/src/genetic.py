@@ -170,25 +170,7 @@ def genetic_algorithm(num_generations, package_stream, population_size):
         print(f" Best score so far: {best_score}")
         print(f" Generation: {generation_no}")
         scores_history.append(abs(best_score))
-        
-    """plt.figure(figsize=(10, 6))
-    generations = np.array(range(1, generation_no + 1))
-    scores = np.array(scores_history)
-
-
-    plt.scatter(generations, scores, color="blue", s=5, label="Best Score")
-
-
-    z = np.polyfit(generations, scores, 5)  
-    p = np.poly1d(z)
-    plt.plot(generations, p(generations), "r--", label="Trend Line")
-
-    plt.title("Genetic Algorithm Performance Over Generations")
-    plt.xlabel("Generation")
-    plt.ylabel("Score")
-    plt.grid(True)
-    plt.legend()
-    plt.show()"""
+    
 
     print(f"  Final score: {best_score}")
     print(f"  Found on generation {best_solution_generation}")
