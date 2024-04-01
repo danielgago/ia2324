@@ -51,7 +51,7 @@ def main():
         sa_times.append(execution_time)
 
         start_time = time.time()
-        solution4 = get_tabu_solution(package_stream, 200, int(num_packages/2), num_packages ,True, False)
+        solution4 = get_tabu_solution(package_stream, 200, 3, 10 ,True, False)
         end_time = time.time()
         execution_time = end_time - start_time
         ts_scores.append(evaluate_solution(solution4))

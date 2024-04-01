@@ -167,8 +167,8 @@ def genetic_algorithm(num_generations, package_stream, population_size):
             best_score = greatest_fit_score
             best_solution_generation = generation_no
 
-        print(f" Best score so far: {best_score}")
-        print(f" Generation: {generation_no}")
+        # print(f" Best score so far: {best_score}")
+        # print(f" Generation: {generation_no}")
         scores_history.append(abs(best_score))
     
 
