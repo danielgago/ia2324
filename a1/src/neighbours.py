@@ -4,7 +4,7 @@ import random
 
 from utils import evaluate_solution
 
-
+# Generates a neighbor solution by randomly selecting a package and moving it to a new position within the solution.
 def get_neighbour_solution1(solution):
     neighbour = copy.deepcopy(solution)
 
@@ -17,7 +17,7 @@ def get_neighbour_solution1(solution):
     return neighbour
 
 
-# Swap 2 packages from the order
+# Creates a neighbor solution by swapping the positions of two randomly selected packages.
 def get_neighbour_solution2(solution):
     neighbour = copy.deepcopy(solution)
 
@@ -28,6 +28,7 @@ def get_neighbour_solution2(solution):
     return neighbour
 
 
+# Generates a neighbor by reversing a randomly selected segment of the solution.
 def get_neighbour_solution3(solution):
     neighbour = copy.deepcopy(solution)
 
@@ -39,6 +40,7 @@ def get_neighbour_solution3(solution):
     return neighbour
 
 
+# Selects one of the three neighbor-generating methods at random and applies it to the given solution.
 def get_random_neighbour_solution(solution):
     rand_num = random.randint(0, 2)
     if rand_num == 0:
@@ -49,9 +51,11 @@ def get_random_neighbour_solution(solution):
         return get_neighbour_solution3(solution)
 
 
+# Generates all possible neighbors of a solution by applying all types of modifications (reposition, swap, reverse segment).
 def get_all_neighbours(solution):
     neighbours = []
 
+    # Reposition each package in all possible positions.
     for i in range(len(solution)):
         neighbour = copy.deepcopy(solution)
         package = neighbour.pop(i)
@@ -60,18 +64,21 @@ def get_all_neighbours(solution):
             neighbour2.insert(j, package)
             neighbours.append(neighbour2)
 
+    # Swap the positions of each pair of packages.
     for i in range(len(solution)):
         for j in range(i + 1, len(solution)):
             neighbour = copy.deepcopy(solution)
             neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
             neighbours.append(neighbour)
-            
+
+    # Reverse segments of the solution.    
     for i in range(len(solution)):
         for j in range(i + 1, len(solution)):
             neighbour[i:j] = reversed(neighbour[i:j])
     return neighbours
 
 
+# Identifies and returns the best neighbor based on its evaluated score.
 def get_best_neighbour(neighbours):
     best_neighbour = neighbours[0]
     best_score = evaluate_solution(best_neighbour)

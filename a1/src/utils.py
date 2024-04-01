@@ -6,12 +6,13 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 
-
+ # Create a randomly list of packages from an existing list.
 def generate_random_solution(package_stream):
     solution = copy.deepcopy(package_stream)
     random.shuffle(solution)
     return solution
 
+# Calculate the total cost of delivering the packages in the given order and return its negative value for minimization
 def evaluate_solution(solution):
     last_x = 0
     last_y = 0
@@ -22,6 +23,8 @@ def evaluate_solution(solution):
     for package in solution:
         if package == None:
             return 0
+        
+        # Calculate distance from the last package's location
         dist = math.sqrt(
             (package.coordinates_x - last_x) ** 2
             + (package.coordinates_y - last_y) ** 2
@@ -47,6 +50,7 @@ def evaluate_solution(solution):
 
     return -total_cost
 
+# Print the IDs of packages in the solution in order
 def print_solution_ids(solution):
     sol = "["
     for package in solution:
@@ -55,6 +59,7 @@ def print_solution_ids(solution):
     sol += "]"
     print(sol)
 
+# Visualize the delivery path of packages using pygame.
 def display_path(solution):
     WIDTH = 600
     WHITE = (255, 255, 255)
@@ -71,6 +76,7 @@ def display_path(solution):
 
     delivery_path = [(0, 0)]
 
+    # Convert package coordinates to screen positions and add to the path
     for package in solution:
         destination = (
             package.coordinates_x * (WIDTH / map_size),
@@ -86,6 +92,7 @@ def display_path(solution):
 
         screen.fill(WHITE)
 
+        # Draw packages and delivery path on the screen
         for package in solution:
             draw_x = package.coordinates_x * (WIDTH / map_size)
             draw_y = package.coordinates_y * (WIDTH / map_size)
@@ -101,6 +108,7 @@ def display_path(solution):
 
     pygame.quit()
     
+# Convert a solution (list of package objects) into a Pandas DataFrame for analysis.
 def solution_to_data_frame(solution):
     df = pd.DataFrame(
         [
@@ -127,6 +135,7 @@ def solution_to_data_frame(solution):
     )
     return df
 
+# Plot the progress of scores in a Hill Climbing optimization algorithm.
 def show_hc_graph(scores):
     best_scores, neighbour_scores = zip(*scores)
 
@@ -140,7 +149,8 @@ def show_hc_graph(scores):
     plt.legend()
     plt.grid(True)
     plt.show()
-    
+
+# Compare Hill Climbing and Steepest Ascent Hill Climbing algorithms over iterations.   
 def show_hc_iteration_comparison_graph(hc_scores, sahc_scores):
     best_hc_scores, _ = zip(*hc_scores)
     best_sahc_scores, _ = zip(*sahc_scores)
@@ -157,6 +167,7 @@ def show_hc_iteration_comparison_graph(hc_scores, sahc_scores):
     plt.grid(True)
     plt.show()
 
+# Compare scores of basic and Steepest Ascent Hill Climbing for different package counts.
 def show_hc_score_comparison_graph(num_packages_list, hc_scores, sahc_scores):
     plt.plot(num_packages_list, hc_scores, label='Basic')
     plt.plot(num_packages_list, sahc_scores, label='Steepest Ascent')
@@ -168,6 +179,7 @@ def show_hc_score_comparison_graph(num_packages_list, hc_scores, sahc_scores):
     plt.grid(True)
     plt.show()
 
+# Compare execution times of basic and Steepest Ascent Hill Climbing for different package counts.
 def show_hc_time_comparison_graph(num_packages_list, hc_times, sahc_times):
     plt.plot(num_packages_list, hc_times, label='Basic')
     plt.plot(num_packages_list, sahc_times, label='Steepest Ascent')
@@ -179,7 +191,7 @@ def show_hc_time_comparison_graph(num_packages_list, hc_times, sahc_times):
     plt.grid(True)
     plt.show()
 
-
+# Plot the progress of scores in a Simulated Annealing optimization algorithm.
 def show_sa_graph(scores):
     best_scores, current_scores = zip(*scores)
 
@@ -220,6 +232,7 @@ def show_sa_time_comparison_graph(num_packages_list, hc_times, sa_time1, sa_time
     plt.grid(True)
     plt.show()
 
+# Plot the progress of scores in a Tabu Search optimization algorithm.
 def show_ts_graph(scores):
     best_scores, current_scores = zip(*scores)
 
@@ -234,6 +247,7 @@ def show_ts_graph(scores):
     plt.grid(True)
     plt.show()
 
+# Plot the progress of scores in a Genetic Algorithm optimization algorithm.
 def show_ga_graph(scores):
     best_scores = scores
 
@@ -250,7 +264,8 @@ def show_ga_graph(scores):
     plt.legend()
     plt.grid(True)
     plt.show()
-    
+
+# Compare best scores achieved by different algorithms for varying numbers of packages.   
 def show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores, ts_scores, ga_scores):
     plt.plot(num_packages_list, hc_scores, label='Hill Climbing')
     plt.plot(num_packages_list, sahc_scores, label='Steepest Ascent Hill Climbing')
@@ -263,7 +278,8 @@ def show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores,
     plt.legend()
     plt.grid(True)
     plt.show()
-
+    
+# Compare execution times of different algorithms for varying numbers of packages.
 def show_times_graph(num_packages_list, hc_times, sahc_times, sa_times, ts_times, ga_times):
     plt.plot(num_packages_list, hc_times, label='Hill Climbing')
     plt.plot(num_packages_list, sahc_times, label='Steepest Ascent Hill Climbing')

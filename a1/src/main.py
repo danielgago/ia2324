@@ -37,7 +37,7 @@ def main():
         hc_times.append(execution_time)
 
         start_time = time.time()
-        solution2 = get_sahc_solution(package_stream)
+        solution2 = get_sahc_solution(package_stream, True)
         end_time = time.time()
         execution_time = end_time - start_time
         sahc_scores.append(evaluate_solution(solution2))
@@ -51,7 +51,7 @@ def main():
         sa_times.append(execution_time)
 
         start_time = time.time()
-        solution4 = get_tabu_solution(package_stream, 200, 5, num_packages)
+        solution4 = get_tabu_solution(package_stream, 200, 5, num_packages ,True, False)
         end_time = time.time()
         execution_time = end_time - start_time
         ts_scores.append(evaluate_solution(solution4))
