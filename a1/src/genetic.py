@@ -175,4 +175,4 @@ def genetic_algorithm(num_generations, package_stream, population_size):
     print(f"  Final score: {best_score}")
     print(f"  Found on generation {best_solution_generation}")
 
-    return best_solution,scores_history
+    return best_solution
