@@ -360,6 +360,7 @@ def main():
             solution1 = get_hc_solution(package_stream, 1000, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            hc_times = execution_time
             hc_score = evaluate_solution(solution1)
             print("Hill Climbing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -368,6 +369,7 @@ def main():
             solution2 = get_sahc_solution(package_stream, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            sahc_times = execution_time
             sahc_score = evaluate_solution(solution2)
             print("Steepest Ascent Hill Climbing:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -381,6 +383,7 @@ def main():
             solution1 = get_hc_solution(package_stream, 1000, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            hc_times = execution_time
             hc_score = evaluate_solution(solution1)
             print("Hill Climbing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -389,6 +392,7 @@ def main():
             solution2 = get_sa_solution(package_stream, False, False, cooling)
             end_time = time.time()
             execution_time = end_time - start_time
+            sa_times = execution_time
             sa_score = evaluate_solution(solution2)
             print("Simulated Annealing:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -401,6 +405,7 @@ def main():
             solution1 = get_hc_solution(package_stream, 1000, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            hc_times = execution_time
             hc_score = evaluate_solution(solution1)
             print("Hill Climbing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -409,6 +414,7 @@ def main():
             solution2 = get_tabu_solution(package_stream, 200, 5, num_packages ,False, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ts_times = execution_time
             ts_score = evaluate_solution(solution2)
             print("Tabu Search:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -421,6 +427,7 @@ def main():
             solution1 = get_hc_solution(package_stream, 1000, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            hc_times = execution_time
             hc_score = evaluate_solution(solution1)
             print("Hill Climbing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -431,6 +438,7 @@ def main():
             solution2 = genetic_algorithm(generations, package_stream, population_size, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ga_times = execution_time
             ga_score = evaluate_solution(solution2)
             print("Genetic Algorithm:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -444,6 +452,7 @@ def main():
             solution1 = get_sahc_solution(package_stream, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            sahc_times = execution_time
             sahc_score = evaluate_solution(solution1)
             print("Steepest Ascent Hill Climbing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -452,6 +461,7 @@ def main():
             solution2 = get_sa_solution(package_stream, False, False, cooling)
             end_time = time.time()
             execution_time = end_time - start_time
+            sa_times = execution_time
             sa_score = evaluate_solution(solution2)
             print("Simulated Annealing:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -464,6 +474,7 @@ def main():
             solution1 = get_sahc_solution(package_stream, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            sahc_times = execution_time
             sahc_score = evaluate_solution(solution1)
             print("Steepest Ascent Hill Climbing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -472,6 +483,7 @@ def main():
             solution2 = get_tabu_solution(package_stream, 200, 5, num_packages ,False, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ts_times = execution_time
             ts_score = evaluate_solution(solution2)
             print("Tabu Search:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -484,6 +496,7 @@ def main():
             solution1 = get_sahc_solution(package_stream, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            sahc_times = execution_time
             sahc_score = evaluate_solution(solution1)
             print("Steepest Ascent Hill Climbing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -494,6 +507,7 @@ def main():
             solution2 = genetic_algorithm(generations, package_stream, population_size, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ga_times = execution_time
             ga_score = evaluate_solution(solution2)
             print("Genetic Algorithm:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -507,6 +521,7 @@ def main():
             solution1 = get_sa_solution(package_stream, False, False, cooling)
             end_time = time.time()
             execution_time = end_time - start_time
+            sa_times = execution_time
             sa_score = evaluate_solution(solution1)
             print("Simulated Annealing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -515,6 +530,7 @@ def main():
             solution2 = get_tabu_solution(package_stream, 200, 5, num_packages ,False, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ts_times = execution_time
             ts_score = evaluate_solution(solution2)
             print("Tabu Search:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -528,6 +544,7 @@ def main():
             solution1 = get_sa_solution(package_stream, False, False, cooling)
             end_time = time.time()
             execution_time = end_time - start_time
+            sa_times = execution_time
             sa_score = evaluate_solution(solution1)
             print("Simulated Annealing:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -538,6 +555,7 @@ def main():
             solution2 = genetic_algorithm(generations, package_stream, population_size, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ga_times = execution_time  
             ga_score = evaluate_solution(solution2)
             print("Genetic Algorithm:",print_solution_ids(solution2))
             display_path(solution2,map_size)
@@ -550,6 +568,7 @@ def main():
             solution1 = get_tabu_solution(package_stream, 200, 5, num_packages ,False, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ts_times = execution_time
             ts_score = evaluate_solution(solution1)
             print("Tabu Search:",print_solution_ids(solution1))
             display_path(solution1,map_size)
@@ -560,6 +579,7 @@ def main():
             solution2 = genetic_algorithm(generations, package_stream, population_size, False)
             end_time = time.time()
             execution_time = end_time - start_time
+            ga_times = execution_time
             ga_score = evaluate_solution(solution2)
             print("Genetic Algorithm:",print_solution_ids(solution2))
             display_path(solution2,map_size)
