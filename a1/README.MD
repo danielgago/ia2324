@@ -8,7 +8,7 @@
 
 All implemented algorithms are located in separate files, all in [a1/src](a1/src)
 
-Neighbourhood, evaluation and graph functions are located in [a1/src/utils.py](a1/src/utils.py) file.
+Neighbourhood, evaluation and graph functions are located in [a1/src/neighbours.py](a1/src/neighbours.py) and [a1/src/utils.py](a1/src/utils.py) file.
 
 ## Libraries
 
