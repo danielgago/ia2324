@@ -266,3 +266,40 @@ def show_times_graph(num_packages_list, hc_times, sahc_times, sa_times, ts_times
     plt.legend()
     plt.grid(True)
     plt.show()
+
+
+# Compare best scores achieved by different algorithms for a single number of packages.
+def show_best_scores_graph_single(num_packages_list, algo_scores, algorithm_name):
+    plt.plot(num_packages_list, algo_scores, label=algorithm_name)
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Best Score')
+    plt.title(f'{algorithm_name} Best Solution Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Compare execution times of different algorithms for a single number of packages.
+def show_times_graph_single(num_packages_list, algo_times, algorithm_name):
+    plt.plot(num_packages_list, algo_times, label=algorithm_name)
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Execution Time (s)')
+    plt.title(f'{algorithm_name} Execution Time Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+# Compare best scores achieved by different algorithms for the same number of packages.
+def show_best_scores_graph_same(num_packages, hc_score, sahc_score, sa_score, ts_score, ga_score):
+    plt.bar(['HC', 'SAHC', 'SA', 'T', 'GEN'], [-hc_score, -sahc_score, -sa_score, -ts_score, -ga_score])
+    plt.ylabel('Best Score')
+    plt.title(f'Algorithm Best Solution Comparison ({num_packages} packages)')
+    plt.grid(True)
+    plt.show()
+
+# Compare execution times of different algorithms for the same number of packages.
+def show_times_graph_same(num_packages, hc_time, sahc_time, sa_time, ts_time, ga_time):
+    plt.bar(['HC', 'SAHC', 'SA', 'T', 'GEN'], [hc_time, sahc_time, sa_time, ts_time, ga_time])
+    plt.ylabel('Execution Time (s)')
+    plt.title(f'Algorithm Execution Time Comparison ({num_packages} packages)')
+    plt.grid(True)
+    plt.show()
