@@ -194,6 +194,32 @@ def show_sa_graph(scores):
     plt.grid(True)
     plt.show()
 
+def show_sa_score_comparison_graph(num_packages_list, hc_scores, sa_score1, sa_score2, sa_score3, sa_score4):
+    plt.plot(num_packages_list, hc_scores, label='Hill Climbing')
+    plt.plot(num_packages_list, sa_score1, label='SA: Cooling = 0.9')
+    plt.plot(num_packages_list, sa_score2, label='SA: Cooling = 0.95')
+    plt.plot(num_packages_list, sa_score3, label='SA: Cooling = 0.99')
+    plt.plot(num_packages_list, sa_score4, label='SA: Cooling = 0.999')
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Best Score')
+    plt.title('Simulated Annealing Best Solution Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    
+def show_sa_time_comparison_graph(num_packages_list, hc_times, sa_time1, sa_time2, sa_time3, sa_time4):
+    plt.plot(num_packages_list, hc_times, label='Hill Climbing')
+    plt.plot(num_packages_list, sa_time1, label='SA: Cooling = 0.9')
+    plt.plot(num_packages_list, sa_time2, label='SA: Cooling = 0.95')
+    plt.plot(num_packages_list, sa_time3, label='SA: Cooling = 0.99')
+    plt.plot(num_packages_list, sa_time4, label='SA: Cooling = 0.999')
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Execution Time (s)')
+    plt.title('Simulated Annealing Time Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 def show_ts_graph(scores):
     best_scores, current_scores = zip(*scores)
 

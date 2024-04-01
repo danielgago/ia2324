@@ -12,7 +12,7 @@ def prob(current_score, new_score, temperature):
     return math.exp(-(current_score - new_score) / temperature)
 
 
-def get_sa_solution(package_stream, num_iterations, log=False, scores_info=False):
+def get_sa_solution(package_stream, num_iterations, log=False, scores_info=False, cooling=0.99):
     it = 0
     it_no_imp = 0
     temperature = 1000
@@ -28,7 +28,7 @@ def get_sa_solution(package_stream, num_iterations, log=False, scores_info=False
         print(f"Initial score: {best_score}")
 
     while temperature > 0.1:
-        temperature = temperature * 0.99
+        temperature = temperature * cooling
         it += 1
         it_no_imp += 1
 
