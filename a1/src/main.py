@@ -65,7 +65,7 @@ def main():
         start_time = time.time()
         generations = num_packages*20
         population_size = int(generations/10)
-        solution5 = genetic_algorithm(generations, package_stream, population_size)
+        solution5 = genetic_algorithm(generations, package_stream, population_size, False)
         end_time = time.time()
         execution_time = end_time - start_time
         ga_scores.append(evaluate_solution(solution5))
