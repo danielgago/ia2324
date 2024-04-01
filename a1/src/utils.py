@@ -13,8 +13,6 @@ def generate_random_solution(package_stream):
     return solution
 
 def evaluate_solution(solution):
-    #declare the variables in one line
-    
     last_x = 0
     last_y = 0
     total_dist = 0
@@ -71,9 +69,8 @@ def display_path(solution):
     pygame.display.set_caption("Delivery Path Visualization")
     clock = pygame.time.Clock()
 
-    delivery_path = [(0, 0)]  # Starting point
+    delivery_path = [(0, 0)]
 
-    # Calculate delivery path
     for package in solution:
         destination = (
             package.coordinates_x * (WIDTH / map_size),
@@ -89,7 +86,6 @@ def display_path(solution):
 
         screen.fill(WHITE)
 
-        # Update the screen
         for package in solution:
             draw_x = package.coordinates_x * (WIDTH / map_size)
             draw_y = package.coordinates_y * (WIDTH / map_size)
@@ -155,6 +151,32 @@ def show_ts_graph(scores):
     plt.xlabel('Iterations')
     plt.ylabel('Score')
     plt.title('Tabu Search Progress')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+    
+def show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores, ts_scores, ga_scores):
+    plt.plot(num_packages_list, hc_scores, label='Hill Climbing')
+    plt.plot(num_packages_list, sahc_scores, label='Steepest Ascent Hill Climbing')
+    plt.plot(num_packages_list, sa_scores, label='Simulated Annealing')
+    plt.plot(num_packages_list, ts_scores, label='Tabu Search')
+    plt.plot(num_packages_list, ga_scores, label='Genetic Algorithm')
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Best Score')
+    plt.title('Algorithm Best Solution Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def show_times_graph(num_packages_list, hc_times, sahc_times, sa_times, ts_times, ga_times):
+    plt.plot(num_packages_list, hc_times, label='Hill Climbing')
+    plt.plot(num_packages_list, sahc_times, label='Steepest Ascent Hill Climbing')
+    plt.plot(num_packages_list, sa_times, label='Simulated Annealing')
+    plt.plot(num_packages_list, ts_times, label='Tabu Search')
+    plt.plot(num_packages_list, ga_times, label='Genetic Algorithm')
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Execution Time (s)')
+    plt.title('Algorithm Execution Time Comparison')
     plt.legend()
     plt.grid(True)
     plt.show()

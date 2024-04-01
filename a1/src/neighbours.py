@@ -28,12 +28,25 @@ def get_neighbour_solution2(solution):
     return neighbour
 
 
-# Neighbour 1 or 2 with 50% each
 def get_neighbour_solution3(solution):
-    if random.randint(0, 1) == 0:
+    neighbour = copy.deepcopy(solution)
+
+    start_index = random.randint(0, len(neighbour) - 1)
+    end_index = random.randint(start_index, len(neighbour))
+
+    neighbour[start_index:end_index] = reversed(neighbour[start_index:end_index])
+
+    return neighbour
+
+
+def get_random_neighbour_solution(solution):
+    rand_num = random.randint(0, 2)
+    if rand_num == 0:
         return get_neighbour_solution1(solution)
-    else:
+    elif rand_num == 1:
         return get_neighbour_solution2(solution)
+    else:
+        return get_neighbour_solution3(solution)
 
 
 def get_all_neighbours(solution):
@@ -52,6 +65,10 @@ def get_all_neighbours(solution):
             neighbour = copy.deepcopy(solution)
             neighbour[i], neighbour[j] = neighbour[j], neighbour[i]
             neighbours.append(neighbour)
+            
+    for i in range(len(solution)):
+        for j in range(i + 1, len(solution)):
+            neighbour[i:j] = reversed(neighbour[i:j])
     return neighbours
 
 

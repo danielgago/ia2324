@@ -28,6 +28,7 @@ class Package:
             return False
         return self.id == other.id
 
+
 def generate_package_stream(num_packages, map_size):
     package_types = ["fragile", "normal", "urgent"]
     package_stream = [

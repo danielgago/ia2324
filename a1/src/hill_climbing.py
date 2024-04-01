@@ -1,4 +1,4 @@
-from neighbours import get_neighbour_solution3, get_all_neighbours, get_best_neighbour
+from neighbours import get_random_neighbour_solution, get_all_neighbours, get_best_neighbour
 from utils import evaluate_solution
 
 
@@ -12,7 +12,7 @@ def get_hc_solution(package_stream, num_iterations, log=False):
 
     while iteration < num_iterations:
         iteration += 1
-        neighbor_solution = get_neighbour_solution3(best_solution)
+        neighbor_solution = get_random_neighbour_solution(best_solution)
         neighbor_score = evaluate_solution(neighbor_solution)
 
         if neighbor_score > best_score:

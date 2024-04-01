@@ -2,7 +2,7 @@ import copy
 import math
 import random
 
-from neighbours import get_neighbour_solution3
+from neighbours import get_random_neighbour_solution
 from utils import evaluate_solution
 
 
@@ -27,12 +27,12 @@ def get_sa_solution(package_stream, num_iterations, log=False, scores_info=False
     if log:
         print(f"Initial score: {best_score}")
 
-    while it_no_imp < num_iterations:
+    while temperature > 0.1:
         temperature = temperature * 0.99
         it += 1
         it_no_imp += 1
 
-        temp_solution = get_neighbour_solution3(solution)
+        temp_solution = get_random_neighbour_solution(solution)
         temp_score = evaluate_solution(temp_solution)
 
         if temp_score > best_score:

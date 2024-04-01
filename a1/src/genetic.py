@@ -2,7 +2,7 @@ import random
 from matplotlib import pyplot as plt
 import numpy as np
 
-from neighbours import get_neighbour_solution3
+from neighbours import get_random_neighbour_solution
 from utils import evaluate_solution, generate_random_solution
 
 
@@ -67,6 +67,13 @@ def order_crossover(solution1, solution2):
     return child1, child2
 
 
+def crossover(solution1, solution2):
+    if random.randint(0, 1) == 0:
+        return order_based_crossover(solution1, solution2)
+    else:
+        return order_crossover(solution1, solution2)
+
+
 def tournament_selection(population, fitness_scores, tournament_size):
     selected_indices = random.sample(range(len(population)), tournament_size)
     selected_fitness = [fitness_scores[i] for i in selected_indices]
@@ -90,106 +97,81 @@ def roulette_selection(population, fitness_scores):
             return solution
 
 
-
-def mutate_solution_1(solution):
-    index_1 = np.random.randint(0, len(solution))
-    index_2 = (index_1 + np.random.randint(0, len(solution))) % (
-        len(solution) - 1
-    )  # Efficient way to generate a non-repeated index
-    solution[index_1], solution[index_2] = solution[index_2], solution[index_1]
-    return solution
+def mutate_solution(solution):
+    return get_random_neighbour_solution(solution)
 
 
-def mutate_solution_2(solution):
-    if len(solution) > 1:  # Ensure there are at least two elements to swap
-        index_1, index_2 = np.random.choice(range(len(solution)), size=2, replace=False)
-        solution[index_1], solution[index_2] = solution[index_2], solution[index_1]
-    return solution
+def get_greatest_fit(population, fitness_scores):
+    greatest_fit_index = fitness_scores.index(max(fitness_scores))
+    return population[greatest_fit_index], fitness_scores[greatest_fit_index]
 
 
-def mutate_solution_3(solution):
-    return get_neighbour_solution3(solution)
+def get_greatest_fits(population, fitness_scores, no_greatest_fits):
+    greatest_fits = []
+    scores_copy = fitness_scores[:]
+    for _ in range(no_greatest_fits):
+        greatest_fit_index = scores_copy.index(max(scores_copy))
+        greatest_fits.append(population[greatest_fit_index])
+        scores_copy[greatest_fit_index] = -float("inf")
+    return greatest_fits
 
 
-def get_greatest_fit(population):
-    best_solution = population[0]
-    best_score = evaluate_solution(population[0])
-    for i in range(1, len(population) - 1):
-        score = evaluate_solution(population[i])
-        if score > best_score:
-            best_score = score
-            best_solution = population[i]
-    return best_solution, best_score
-
-
-def replace_least_fittest(population, offspring):
-    least_fittest_index = 0
-    least_fittest_value = evaluate_solution(population[0])
-    for i in range(1, len(population)):
-        score = evaluate_solution(population[i])
-        if score < least_fittest_value:
-            least_fittest_value = score
-            least_fittest_index = i
-    population[least_fittest_index] = offspring
-
-
-def genetic_algorithm(
-    num_generations, package_stream, population_size, crossover_func, mutation_func
-):
+def genetic_algorithm(num_generations, package_stream, population_size):
     population = []
     population.append(package_stream)
-    current_scores_history = []
     scores_history = []
-    for i in range(1, population_size):
-        population.append(generate_random_solution(population[i - 1]))
+    for _ in range(1, population_size):
+        population.append(generate_random_solution(package_stream))
 
     fitness_scores = [evaluate_solution(solution) for solution in population]
     best_solution = population[0]
     best_score = evaluate_solution(best_solution)
     best_solution_generation = 0
-    current_score = best_score
     print(f"Initial score: {best_score}")
 
     generation_no = 0
 
-    initial_tournament_size = 20
-    final_tournament_size = 5
-    tournament_size = initial_tournament_size
+    tournament_size = int(population_size * 0.2)
 
-    while num_generations > 0:
+    while generation_no < num_generations:
+        greatest_fits = get_greatest_fits(population, fitness_scores, 4)
+        new_population = greatest_fits
 
-        tournament_size = max(final_tournament_size, 
-                              initial_tournament_size - int(generation_no * (initial_tournament_size - final_tournament_size) / num_generations))
+        for _ in range((population_size - 4) // 2):
+            tournament_winner = tournament_selection(
+                population, fitness_scores, tournament_size
+            )
+            roulette_winner = roulette_selection(population, fitness_scores)
+
+            if random.random() < 0.9:
+                offspring1, offspring2 = crossover(tournament_winner, roulette_winner)
+            else:
+                offspring1, offspring2 = tournament_winner, roulette_winner
+
+            if random.random() < 0.1:
+                offspring1 = mutate_solution(offspring1)
+            if random.random() < 0.1:
+                offspring2 = mutate_solution(offspring2)
+
+            new_population.append(offspring1)
+            new_population.append(offspring2)
+
+        population = new_population
         generation_no += 1
 
         fitness_scores = [evaluate_solution(solution) for solution in population]
 
-        tournament_winner = tournament_selection(population, fitness_scores, tournament_size)
-        roulette_winner = roulette_selection(population, fitness_scores)
-
-        offspring1, offspring2 = crossover_func(tournament_winner, roulette_winner)
-
-        offspring1 = mutation_func(offspring1)
-        offspring2 = mutation_func(offspring2)
-
-        replace_least_fittest(population, offspring1)
-        replace_least_fittest(population, offspring2)
-
-        greatest_fit, greatest_fit_score = get_greatest_fit(population)
-        current_score = greatest_fit_score
+        greatest_fit, greatest_fit_score = get_greatest_fit(population, fitness_scores)
         if greatest_fit_score > best_score:
             best_solution = greatest_fit
             best_score = greatest_fit_score
             best_solution_generation = generation_no
 
-        num_generations -= 1
-
         print(f" Best score so far: {best_score}")
         print(f" Generation: {generation_no}")
         scores_history.append(abs(best_score))
-        current_scores_history.append(abs(current_score))
-
-    plt.figure(figsize=(10, 6))
+        
+    """plt.figure(figsize=(10, 6))
     generations = np.array(range(1, generation_no + 1))
     scores = np.array(scores_history)
 
@@ -206,7 +188,7 @@ def genetic_algorithm(
     plt.ylabel("Score")
     plt.grid(True)
     plt.legend()
-    plt.show()
+    plt.show()"""
 
     print(f"  Final score: {best_score}")
     print(f"  Found on generation {best_solution_generation}")
