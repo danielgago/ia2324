@@ -140,6 +140,45 @@ def show_hc_graph(scores):
     plt.legend()
     plt.grid(True)
     plt.show()
+    
+def show_hc_iteration_comparison_graph(hc_scores, sahc_scores):
+    best_hc_scores, _ = zip(*hc_scores)
+    best_sahc_scores, _ = zip(*sahc_scores)
+    
+    hc_iterations = np.arange(1, len(best_hc_scores) + 1)
+    sahc_iterations = np.arange(1, len(best_sahc_scores) + 1)
+    
+    plt.plot(hc_iterations, best_hc_scores, label='Basic')
+    plt.plot(sahc_iterations, best_sahc_scores, label='Steepest Ascent')
+    plt.xlabel('Iterations')
+    plt.ylabel('Score')
+    plt.title('Hill Climbing Progress Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def show_hc_score_comparison_graph(num_packages_list, hc_scores, sahc_scores):
+    plt.plot(num_packages_list, hc_scores, label='Basic')
+    plt.plot(num_packages_list, sahc_scores, label='Steepest Ascent')
+
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Best Score')
+    plt.title('Hill Climbing Best Solution Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+def show_hc_time_comparison_graph(num_packages_list, hc_times, sahc_times):
+    plt.plot(num_packages_list, hc_times, label='Basic')
+    plt.plot(num_packages_list, sahc_times, label='Steepest Ascent')
+
+    plt.xlabel('Number of Packages')
+    plt.ylabel('Execution Time (s)')
+    plt.title('Hill Climbing Time Comparison')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 
 def show_sa_graph(scores):
     best_scores, current_scores = zip(*scores)
