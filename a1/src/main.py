@@ -11,12 +11,6 @@ num_packages = 15
 map_size = 60
 
 def main():
-    package_stream = generate_package_stream(num_packages, map_size)
-    solution, scores = get_hc_solution(package_stream, 1000, True, True)
-    show_hc_graph(scores)
-
-"""
-def main():
     num_packages_list = [15, 20, 25, 30, 35, 40, 45, 50]
     hc_scores = []
     sahc_scores = []
@@ -41,6 +35,7 @@ def main():
         hc_scores.append(evaluate_solution(solution1))
         hc_times.append(execution_time)
 
+
         start_time = time.time()
         #solution2 = get_sahc_solution(package_stream, True)
         end_time = time.time()
@@ -56,12 +51,12 @@ def main():
         sa_times.append(execution_time)
 
         start_time = time.time()
-        solution4 = get_tabu_solution(package_stream, 200, 3, 10 ,True, False)
+        solution4 = get_tabu_solution(package_stream, 200, 5, num_packages ,True, False)
         end_time = time.time()
         execution_time = end_time - start_time
         ts_scores.append(evaluate_solution(solution4))
         ts_times.append(execution_time)
-        
+
         start_time = time.time()
         generations = num_packages*20
         population_size = int(generations/10)
@@ -70,10 +65,9 @@ def main():
         execution_time = end_time - start_time
         ga_scores.append(evaluate_solution(solution5))
         ga_times.append(execution_time)
-        
-    show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores, ts_scores, ga_scores)
-    show_times_graph(num_packages_list, hc_times, sahc_times, sa_times, ts_times, ga_times)"""
-    
+
+    show_best_scores_graph(num_packages_list, hc_scores, ts_scores)
+    show_times_graph(num_packages_list, hc_times, ts_times)
 
 
 if __name__ == "__main__":
