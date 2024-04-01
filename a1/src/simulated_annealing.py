@@ -48,5 +48,4 @@ def get_sa_solution(package_stream, num_iterations, log=False, scores_info=False
         
     if(scores_info):
         return best_solution, scores
-    else:
-        return best_solution
+    return best_solution
