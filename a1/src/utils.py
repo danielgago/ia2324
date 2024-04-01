@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt
 
- # Create a randomly list of packages from an existing list.
+# Create a random assortment of the packages from an existing list.
 def generate_random_solution(package_stream):
     solution = copy.deepcopy(package_stream)
     random.shuffle(solution)
@@ -38,7 +38,7 @@ def evaluate_solution(solution):
             p_damage = 1 - ((1 - package.breaking_chance) ** total_dist)
             total_breaking_cost += (
                 p_damage * package.breaking_cost
-            )  # Expected value of breaking cost
+            )  # Expected value of breaking cost instead of random chance in order to make the evaluation function deterministic and consistent
 
         if package.package_type == "urgent":
             if (
@@ -206,6 +206,7 @@ def show_sa_graph(scores):
     plt.grid(True)
     plt.show()
 
+# Compare scores of basic and Steepest Ascent Hill Climbing for different package counts.
 def show_sa_score_comparison_graph(num_packages_list, hc_scores, sa_score1, sa_score2, sa_score3, sa_score4):
     plt.plot(num_packages_list, hc_scores, label='Hill Climbing')
     plt.plot(num_packages_list, sa_score1, label='SA: Cooling = 0.9')

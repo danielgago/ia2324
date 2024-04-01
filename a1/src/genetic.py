@@ -148,12 +148,11 @@ def genetic_algorithm(num_generations, package_stream, population_size, log=Fals
     tournament_size = int(population_size * 0.2)
 
     while generation_no < num_generations:
-        greatest_fits = get_greatest_fits(population, fitness_scores, 4)
+        greatest_fits = get_greatest_fits(population, fitness_scores, 4) # Elitism: Selects the 4 best solutions from the population.
         new_population = greatest_fits
 
         for _ in range((population_size - 4) // 2):
             # Evolves the population using selection, crossover, and mutation.
-            # This step also incorporates elitism by ensuring the best solutions are preserved in the new population.
             tournament_winner = tournament_selection(
                 population, fitness_scores, tournament_size
             )
@@ -179,7 +178,6 @@ def genetic_algorithm(num_generations, package_stream, population_size, log=Fals
         fitness_scores = [evaluate_solution(solution) for solution in population]
 
         greatest_fit, greatest_fit_score = get_greatest_fit(population, fitness_scores)
-        # Checks if the new population has yielded a better solution than the current best.
         if greatest_fit_score > best_score:
             best_solution = greatest_fit
             best_score = greatest_fit_score

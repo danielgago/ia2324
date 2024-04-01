@@ -28,7 +28,7 @@ def get_neighbour_solution2(solution):
     return neighbour
 
 
-# Generates a neighbor by reversing a randomly selected segment of the solution.
+# Generates a neighbor by reversing a randomly selected segment of the solution (2-opt swap).
 def get_neighbour_solution3(solution):
     neighbour = copy.deepcopy(solution)
 
@@ -51,7 +51,7 @@ def get_random_neighbour_solution(solution):
         return get_neighbour_solution3(solution)
 
 
-# Generates all possible neighbors of a solution by applying all types of modifications (reposition, swap, reverse segment).
+# Generates all possible neighbors of a solution by applying all types of modifications (reposition, swap, reverse segment/2-opt).
 def get_all_neighbours(solution):
     neighbours = []
 
