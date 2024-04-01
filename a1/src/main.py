@@ -35,7 +35,6 @@ def main():
         hc_scores.append(evaluate_solution(solution1))
         hc_times.append(execution_time)
 
-
         start_time = time.time()
         #solution2 = get_sahc_solution(package_stream, True)
         end_time = time.time()
@@ -43,6 +42,7 @@ def main():
         sahc_scores.append(0)
         sahc_times.append(execution_time)
 
+        
         start_time = time.time()
         solution3 = get_sa_solution(package_stream, 1000, True, False)
         end_time = time.time()
@@ -66,8 +66,8 @@ def main():
         ga_scores.append(evaluate_solution(solution5))
         ga_times.append(execution_time)
 
-    show_best_scores_graph(num_packages_list, hc_scores, ts_scores)
-    show_times_graph(num_packages_list, hc_times, ts_times)
+    show_best_scores_graph(num_packages_list, hc_scores, sahc_scores, sa_scores, ts_scores, ga_scores)
+    show_times_graph(num_packages_list, hc_times, sahc_times, sa_scores, ts_times, ga_scores)
 
 
 if __name__ == "__main__":
