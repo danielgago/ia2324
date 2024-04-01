@@ -5,7 +5,9 @@ import numpy as np
 from neighbours import get_random_neighbour_solution
 from utils import evaluate_solution, generate_random_solution
 
-
+# Performs order-based crossover between two parent solutions.
+# A random set of indices are chosen, and the values at these indices are directly copied from the parents to the children.
+# The rest of the child is filled with non-duplicated items in the order they appear in the other parent.
 def order_based_crossover(solution1, solution2):
     length = len(solution1)
     child1 = [None] * length
@@ -34,6 +36,9 @@ def order_based_crossover(solution1, solution2):
     return child1, child2
 
 
+# Performs order crossover, which preserves the relative order of elements from each parent.
+# Two crossover points are randomly selected, and the segment between them is copied from each parent to the corresponding child.
+# The remaining positions are filled with the other parent's elements while preserving their order.
 def order_crossover(solution1, solution2):
     length = len(solution1)
     mid_point1, mid_point2 = sorted(random.sample(range(length), 2))
@@ -67,6 +72,7 @@ def order_crossover(solution1, solution2):
     return child1, child2
 
 
+# Randomly selects between order-based and order crossover strategies.
 def crossover(solution1, solution2):
     if random.randint(0, 1) == 0:
         return order_based_crossover(solution1, solution2)
@@ -74,6 +80,8 @@ def crossover(solution1, solution2):
         return order_crossover(solution1, solution2)
 
 
+# Selects a single solution from the population using tournament selection.
+# A subset of the population is chosen at random, and the one with the highest fitness is selected.
 def tournament_selection(population, fitness_scores, tournament_size):
     selected_indices = random.sample(range(len(population)), tournament_size)
     selected_fitness = [fitness_scores[i] for i in selected_indices]
@@ -81,6 +89,8 @@ def tournament_selection(population, fitness_scores, tournament_size):
     return population[winner_index]
 
 
+# Selects a single solution using roulette wheel selection based on fitness scores.
+# Solutions with higher fitness have a higher chance of being selected.
 def roulette_selection(population, fitness_scores):
     total_fitness = abs(sum(fitness_scores))
     selection_probs = [abs(score) / total_fitness for score in fitness_scores]
@@ -97,15 +107,16 @@ def roulette_selection(population, fitness_scores):
             return solution
 
 
+# Mutates a solution by generating a random neighbour solution.
 def mutate_solution(solution):
     return get_random_neighbour_solution(solution)
 
-
+# Finds and returns the solution with the highest fitness in the current population.
 def get_greatest_fit(population, fitness_scores):
     greatest_fit_index = fitness_scores.index(max(fitness_scores))
     return population[greatest_fit_index], fitness_scores[greatest_fit_index]
 
-
+# Retrieves a specified number of the best solutions from the population.
 def get_greatest_fits(population, fitness_scores, no_greatest_fits):
     greatest_fits = []
     scores_copy = fitness_scores[:]
@@ -115,14 +126,16 @@ def get_greatest_fits(population, fitness_scores, no_greatest_fits):
         scores_copy[greatest_fit_index] = -float("inf")
     return greatest_fits
 
-
+# Executes the genetic algorithm over a specified number of generations and population size.
 def genetic_algorithm(num_generations, package_stream, population_size, log=False, scores_info=False):
     population = []
     population.append(package_stream)
     scores_history = []
+    # Initializes the population with random solutions.
     for _ in range(1, population_size):
         population.append(generate_random_solution(package_stream))
 
+    # Evaluates the fitness of each solution in the initial population.
     fitness_scores = [evaluate_solution(solution) for solution in population]
     best_solution = population[0]
     best_score = evaluate_solution(best_solution)
@@ -139,6 +152,8 @@ def genetic_algorithm(num_generations, package_stream, population_size, log=Fals
         new_population = greatest_fits
 
         for _ in range((population_size - 4) // 2):
+            # Evolves the population using selection, crossover, and mutation.
+            # This step also incorporates elitism by ensuring the best solutions are preserved in the new population.
             tournament_winner = tournament_selection(
                 population, fitness_scores, tournament_size
             )
@@ -149,6 +164,7 @@ def genetic_algorithm(num_generations, package_stream, population_size, log=Fals
             else:
                 offspring1, offspring2 = tournament_winner, roulette_winner
 
+            # Mutation is applied with a 50% probability to avoid premature convergence.
             if random.random() < 0.5:
                 offspring1 = mutate_solution(offspring1)
             if random.random() < 0.5:
@@ -163,6 +179,7 @@ def genetic_algorithm(num_generations, package_stream, population_size, log=Fals
         fitness_scores = [evaluate_solution(solution) for solution in population]
 
         greatest_fit, greatest_fit_score = get_greatest_fit(population, fitness_scores)
+        # Checks if the new population has yielded a better solution than the current best.
         if greatest_fit_score > best_score:
             best_solution = greatest_fit
             best_score = greatest_fit_score
