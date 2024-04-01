@@ -148,9 +148,9 @@ def genetic_algorithm(num_generations, package_stream, population_size):
             else:
                 offspring1, offspring2 = tournament_winner, roulette_winner
 
-            if random.random() < 0.1:
+            if random.random() < 0.5:
                 offspring1 = mutate_solution(offspring1)
-            if random.random() < 0.1:
+            if random.random() < 0.5:
                 offspring2 = mutate_solution(offspring2)
 
             new_population.append(offspring1)
