@@ -12,7 +12,7 @@ def print_package_num():
     print("Welcome to the package delivery system!")
     print("")
     print("How many packages would you like to deliver?")
-    print("1. 10 packages")
+    print("1. 15 packages")
     print("2. 30 packages")
     print("3. 50 packages")
     print("4. Generate multiple list of packages")
@@ -22,9 +22,9 @@ def print_package_num():
 
 def print_map_size():
     print("What is the size of the map?")
-    print("1. 10x10")
-    print("2. 20x20")
-    print("3. 30x30")
+    print("1. 15x15")
+    print("2. 30x30")
+    print("3. 50x50")
     print("4. Custom size")
     print("5. Back")
     choice = int(input("Enter your choice: "))
@@ -120,7 +120,7 @@ def main():
             print("Invalid choice. Please enter a valid choice.")
     
     if num_packages_choice == 1:
-        num_packages = 10
+        num_packages = 15
     elif num_packages_choice == 2:
         num_packages = 30
     elif num_packages_choice == 3:
@@ -150,9 +150,13 @@ def main():
             return
         else:
             print("Invalid choice. Please enter a valid choice.")
-
-    if map_size_choice != 4:
-        map_size = map_size_choice*10
+    
+    if map_size_choice == 1:
+        map_size = 60
+    elif map_size_choice == 2:
+        map_size = 120
+    elif map_size_choice == 3:
+        map_size = 200
 
     package_stream = generate_package_stream(num_packages, map_size)
 

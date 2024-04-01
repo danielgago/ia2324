@@ -50,6 +50,6 @@ After the algoritm(s) finish, the user will receive a message with the best solu
 
 ## Authors
 
-- Daniel Gago ([lovedzhd](https://github.com/lovedzhd))
-- João Teixeira ([JTomas12](https://github.com/JTomas12))
-- José Santos ([Sereno1710](https://github.com/Sereno1710))
+- Daniel Gago ([up202108791](up202108791@up.pt))
+- João Teixeira ([up202108738](up202108738@up.pt))
+- José Santos ([up202108729](up202108729@up.pt))
