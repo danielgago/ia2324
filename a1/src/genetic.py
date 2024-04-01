@@ -116,7 +116,7 @@ def get_greatest_fits(population, fitness_scores, no_greatest_fits):
     return greatest_fits
 
 
-def genetic_algorithm(num_generations, package_stream, population_size):
+def genetic_algorithm(num_generations, package_stream, population_size,scores_info=False):
     population = []
     population.append(package_stream)
     scores_history = []
@@ -148,9 +148,9 @@ def genetic_algorithm(num_generations, package_stream, population_size):
             else:
                 offspring1, offspring2 = tournament_winner, roulette_winner
 
-            if random.random() < 0.1:
+            if random.random() < 0.5:
                 offspring1 = mutate_solution(offspring1)
-            if random.random() < 0.1:
+            if random.random() < 0.5:
                 offspring2 = mutate_solution(offspring2)
 
             new_population.append(offspring1)
@@ -167,12 +167,14 @@ def genetic_algorithm(num_generations, package_stream, population_size):
             best_score = greatest_fit_score
             best_solution_generation = generation_no
 
-        # print(f" Best score so far: {best_score}")
-        # print(f" Generation: {generation_no}")
-        scores_history.append(abs(best_score))
+        print(f" Best score so far: {best_score}")
+        print(f" Generation: {generation_no}")
+        scores_history.append(best_score)
     
 
     print(f"  Final score: {best_score}")
     print(f"  Found on generation {best_solution_generation}")
 
+    if (scores_info):
+        return best_solution, scores_history
     return best_solution

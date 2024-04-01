@@ -127,6 +127,20 @@ def solution_to_data_frame(solution):
     )
     return df
 
+def show_hc_graph(scores):
+    best_scores, neighbour_scores = zip(*scores)
+
+    iterations = np.arange(1, len(scores) + 1)
+
+    plt.plot(iterations, best_scores, label='Best Score')
+    plt.plot(iterations, neighbour_scores, label='Neighbour Score')
+    plt.xlabel('Iterations')
+    plt.ylabel('Score')
+    plt.title('Hill Climbing Progress')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
 def show_sa_graph(scores):
     best_scores, current_scores = zip(*scores)
 

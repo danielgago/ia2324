@@ -2,10 +2,12 @@ from neighbours import get_random_neighbour_solution, get_all_neighbours, get_be
 from utils import evaluate_solution
 
 
-def get_hc_solution(package_stream, num_iterations, log=False):
+def get_hc_solution(package_stream, num_iterations, log=False, scores_info=False):
     iteration = 0
     best_solution = package_stream
     best_score = evaluate_solution(best_solution)
+    
+    scores = []
 
     if log:
         print(f"Initial score: {best_score}")
@@ -21,20 +23,22 @@ def get_hc_solution(package_stream, num_iterations, log=False):
             iteration = 0
             if log:
                 print(f"New best score: {neighbor_score}")
+        scores.append((best_score, neighbor_score))
 
-    return best_solution
 
-def get_sahc_solution(package_stream, log=False):
-    """
-    Steepest Ascent Hill Climbing
-    
-    
-    """
+    if(scores_info):
+        return best_solution, scores
+    else:
+        return best_solution
+
+def get_sahc_solution(package_stream, log=False, scores_info=False):
     best_solution = package_stream
     best_score = evaluate_solution(best_solution)
 
     if log:
         print(f"Initial score: {best_score}")
+    
+    scores = []
 
     improved = True
     while improved:
@@ -49,5 +53,9 @@ def get_sahc_solution(package_stream, log=False):
             improved = True
             if log:
                 print(f"New best score: {neighbor_score}")
+        scores.append((best_score, neighbor_score))
 
-    return best_solution
+    if(scores_info):
+        return best_solution, scores
+    else:
+        return best_solution
