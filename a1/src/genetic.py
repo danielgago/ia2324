@@ -116,7 +116,7 @@ def get_greatest_fits(population, fitness_scores, no_greatest_fits):
     return greatest_fits
 
 
-def genetic_algorithm(num_generations, package_stream, population_size,scores_info=False):
+def genetic_algorithm(num_generations, package_stream, population_size, log=False, scores_info=False):
     population = []
     population.append(package_stream)
     scores_history = []
@@ -127,7 +127,8 @@ def genetic_algorithm(num_generations, package_stream, population_size,scores_in
     best_solution = population[0]
     best_score = evaluate_solution(best_solution)
     best_solution_generation = 0
-    print(f"Initial score: {best_score}")
+    if log:
+        print(f"Initial score: {best_score}")
 
     generation_no = 0
 
@@ -166,14 +167,15 @@ def genetic_algorithm(num_generations, package_stream, population_size,scores_in
             best_solution = greatest_fit
             best_score = greatest_fit_score
             best_solution_generation = generation_no
-
-        print(f" Best score so far: {best_score}")
-        print(f" Generation: {generation_no}")
+        
+        if log:
+            print(f" Best score so far: {best_score}")
+            print(f" Generation: {generation_no}")
         scores_history.append(best_score)
     
-
-    print(f"  Final score: {best_score}")
-    print(f"  Found on generation {best_solution_generation}")
+    if log:
+        print(f"  Final score: {best_score}")
+        print(f"  Found on generation {best_solution_generation}")
 
     if (scores_info):
         return best_solution, scores_history
