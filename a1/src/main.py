@@ -39,6 +39,16 @@ def print_options():
     choice = int(input("Enter your choice: "))
     return choice
         
+def get_cooling_schedule():
+    print("What cooling level would you like to use?")
+    print("Note: The cooling level should be less than 1.")
+    while True:
+        cooling = float(input("Enter the cooling level: "))
+        if cooling < 1:
+            break
+        else:
+            print("Invalid cooling level. Please enter a valid cooling level.")
+    return cooling
 
 def main():
     num_packages = 0
@@ -140,8 +150,10 @@ def main():
 
     elif choice == 3 and num_packages_choice != 4:
 
+        cooling = get_cooling_schedule()
+        
         start_time = time.time()
-        solution,scores = get_sa_solution(package_stream, 1000, True, False)
+        solution,scores = get_sa_solution(package_stream, True, True, cooling)
         end_time = time.time()
         execution_time = end_time - start_time
         print(f"Execution time: {execution_time}")
@@ -151,11 +163,11 @@ def main():
     elif choice == 3 and num_packages_choice == 4:
         sa_scores = []
         sa_times = []
-
+        cooling = get_cooling_schedule()
         for num_package in num_package_list:
             package_stream = generate_package_stream(num_package, map_size)
             start_time = time.time()
-            solution = get_sa_solution(package_stream, 1000, True, True)
+            solution = get_sa_solution(package_stream, True, True,cooling)
             end_time = time.time()
             execution_time = end_time - start_time
             sa_scores.append(evaluate_solution(solution))
@@ -219,7 +231,9 @@ def main():
 
         show_best_scores_graph_single(num_package_list, ga_scores, "Genetic Algorithm")
         show_times_graph_single(num_package_list, ga_times, "Genetic Algorithm")
+        
     elif choice == 6 and num_packages_choice != 4:
+        cooling= get_cooling_schedule()
         start_time = time.time()
         solution1 = get_hc_solution(package_stream, 1000, True)
         end_time = time.time()
@@ -235,7 +249,7 @@ def main():
         sahc_time= execution_time
 
         start_time = time.time()
-        solution3 = get_sa_solution(package_stream, 1000, True, False)
+        solution3 = get_sa_solution(package_stream, True, False, cooling)
         end_time = time.time()
         execution_time = end_time - start_time
         sa_score= evaluate_solution(solution3)
@@ -271,7 +285,8 @@ def main():
         ts_times = []
         ga_scores = []
         ga_times = []
-        
+        cooling= get_cooling_schedule()
+
         for num_packages in num_package_list:        
             map_size = num_packages*4
             package_stream = generate_package_stream(num_packages, map_size)
@@ -291,7 +306,7 @@ def main():
             sahc_times.append(execution_time)
 
             start_time = time.time()
-            solution3 = get_sa_solution(package_stream, 1000, True, False)
+            solution3 = get_sa_solution(package_stream, True, False, cooling)
             end_time = time.time()
             execution_time = end_time - start_time
             sa_scores.append(evaluate_solution(solution3))
