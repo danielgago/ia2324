@@ -18,7 +18,7 @@ Each folder (a1 and a2) contains the details and source code related to each of 
 
 ## Authors
 
-- Daniel Gago ([lovedzhd](https://github.com/lovedzhd))
+- Daniel Gago ([danielgago](https://github.com/danielgago))
 - João Teixeira ([JTomas12](https://github.com/JTomas12))
 - José Santos ([Sereno1710](https://github.com/Sereno1710))
 
